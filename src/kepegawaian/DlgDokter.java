@@ -1139,8 +1139,9 @@ public class DlgDokter extends javax.swing.JDialog {
                     "',jk='"+CmbJk.getSelectedItem().toString().replaceAll("LAKI-LAKI","L").replaceAll("PEREMPUAN","P").trim()+"',tmp_lahir='"+TTmp.getText()+
                     "',tgl_lahir='"+Valid.SetTgl(DTPLahir.getSelectedItem()+"")+"',gol_drh='"+CMbGd.getSelectedItem()+"',agama='"+cmbAgama.getSelectedItem()+
                     "',almt_tgl='"+TAlmt.getText()+"',no_telp='"+TTlp.getText()+"',email='"+Email.getText()+"',stts_nikah='"+CmbStts.getSelectedItem()+"'"+
-                    ",kd_sps='"+KdSps.getText()+"',alumni='"+TAlumni.getText()+"',no_ijn_praktek='"+TNoi.getText()+"'"
+                    ",kd_sps='"+KdSps.getText()+"',alumni='"+TAlumni.getText()+"',no_ijn_praktek='"+TNoi.getText()+"',user_key='"+user_icare.getText()+"',pass_icare='"+password_icare.getText()+"'"
                 );
+                
                 koneksi.setAutoCommit(true);
                 if(tabMode.getRowCount()!=0){tampil();}
                 emptTeks();

@@ -7137,6 +7137,14 @@ public final class DlgReg extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnBatalKeyPressed
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
+    
+    int jawab = JOptionPane.showConfirmDialog(null,
+            "Apakah anda yakin ingin menghapus data yang dipilih?",
+            "Konfirmasi Hapus",
+            JOptionPane.YES_NO_OPTION);
+
+    if(jawab == JOptionPane.YES_OPTION){
+        
         for(i=0;i<tbPetugas.getRowCount();i++){ 
             if(tbPetugas.getValueAt(i,0).toString().equals("true")){
                 if(akses.getkode().equals("Admin Utama")){
@@ -7154,9 +7162,12 @@ public final class DlgReg extends javax.swing.JDialog {
                 }   
             }
         }
-        
+
         LCount.setText(""+tabMode.getRowCount());
         emptTeks();
+        
+    }
+
 }//GEN-LAST:event_BtnHapusActionPerformed
 
     private void BtnHapusKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnHapusKeyPressed
@@ -7268,30 +7279,79 @@ public final class DlgReg extends javax.swing.JDialog {
         }
 }//GEN-LAST:event_BtnAllKeyPressed
 
+//    private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
+//        if(TNoReg.getText().trim().equals("")){
+//            Valid.textKosong(TNoReg,"No.Regristrasi");
+//        }else if(TNoRw.getText().trim().equals("")){
+//            Valid.textKosong(TNoRw,"No.Rawat");
+//        }else if(TDokter.getText().trim().equals("")){
+//            Valid.textKosong(KdDokter,"dokter");
+//        }else if(TNoRM.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+//            Valid.textKosong(TNoRM,"pasien");
+//        }else if(TPoli.getText().trim().equals("")){
+//            Valid.textKosong(kdpoli,"poliklinik");
+//        }else if(TBiaya.getText().trim().equals("")){
+//            Valid.textKosong(TBiaya,"biaya regristrasi");
+//        }else{
+//            if(tbPetugas.getSelectedRow()>-1){
+//                if(Sequel.cariRegistrasi(TNoRw.getText())>0){
+//                    JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi, data tidak boleh diubah.\nSilahkan hubungi bagian kasir/keuangan ..!!");
+//                    TCari.requestFocus();
+//                }else{
+//                    if(akses.getkode().equals("Admin Utama")){
+//                        ganti();
+//                    }else{
+//                        if(akses.getedit_registrasi()==true){
+//                            if(Sequel.cekTanggal48jam(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),3).toString()+" "+tbPetugas.getValueAt(tbPetugas.getSelectedRow(),4).toString(),Sequel.ambiltanggalsekarang())==true){
+//                                ganti();
+//                            }
+//                        }else{
+//                            JOptionPane.showMessageDialog(rootPane,"Maaf hak akses anda dibatasi, silahkan konfirmasi kepada admin..!!! ");
+//                            TCari.requestFocus();
+//                        }
+//                    }
+//                }
+//            }                
+//        }
+//}//GEN-LAST:event_BtnEditActionPerformed
     private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
-        if(TNoReg.getText().trim().equals("")){
-            Valid.textKosong(TNoReg,"No.Regristrasi");
-        }else if(TNoRw.getText().trim().equals("")){
-            Valid.textKosong(TNoRw,"No.Rawat");
-        }else if(TDokter.getText().trim().equals("")){
-            Valid.textKosong(KdDokter,"dokter");
-        }else if(TNoRM.getText().trim().equals("")||TPasien.getText().trim().equals("")){
-            Valid.textKosong(TNoRM,"pasien");
-        }else if(TPoli.getText().trim().equals("")){
-            Valid.textKosong(kdpoli,"poliklinik");
-        }else if(TBiaya.getText().trim().equals("")){
-            Valid.textKosong(TBiaya,"biaya regristrasi");
-        }else{
-            if(tbPetugas.getSelectedRow()>-1){
-                if(Sequel.cariRegistrasi(TNoRw.getText())>0){
-                    JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi, data tidak boleh diubah.\nSilahkan hubungi bagian kasir/keuangan ..!!");
-                    TCari.requestFocus();
-                }else{
+    if(TNoReg.getText().trim().equals("")){
+        Valid.textKosong(TNoReg,"No.Regristrasi");
+    }else if(TNoRw.getText().trim().equals("")){
+        Valid.textKosong(TNoRw,"No.Rawat");
+    }else if(TDokter.getText().trim().equals("")){
+        Valid.textKosong(KdDokter,"dokter");
+    }else if(TNoRM.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+        Valid.textKosong(TNoRM,"pasien");
+    }else if(TPoli.getText().trim().equals("")){
+        Valid.textKosong(kdpoli,"poliklinik");
+    }else if(TBiaya.getText().trim().equals("")){
+        Valid.textKosong(TBiaya,"biaya regristrasi");
+    }else{
+        if(tbPetugas.getSelectedRow()>-1){
+            if(Sequel.cariRegistrasi(TNoRw.getText())>0){
+                JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi, data tidak boleh diubah.\nSilahkan hubungi bagian kasir/keuangan ..!!");
+                TCari.requestFocus();
+            }else{
+
+                int jawab = JOptionPane.showConfirmDialog(
+                        null,
+                        "Apakah anda yakin ingin mengubah data registrasi ini?",
+                        "Konfirmasi Edit",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if(jawab == JOptionPane.YES_OPTION){
+
                     if(akses.getkode().equals("Admin Utama")){
                         ganti();
                     }else{
                         if(akses.getedit_registrasi()==true){
-                            if(Sequel.cekTanggal48jam(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),3).toString()+" "+tbPetugas.getValueAt(tbPetugas.getSelectedRow(),4).toString(),Sequel.ambiltanggalsekarang())==true){
+                            if(Sequel.cekTanggal48jam(
+                                    tbPetugas.getValueAt(tbPetugas.getSelectedRow(),3).toString()+" "+
+                                    tbPetugas.getValueAt(tbPetugas.getSelectedRow(),4).toString(),
+                                    Sequel.ambiltanggalsekarang())==true){
+
                                 ganti();
                             }
                         }else{
@@ -7299,9 +7359,12 @@ public final class DlgReg extends javax.swing.JDialog {
                             TCari.requestFocus();
                         }
                     }
+
                 }
-            }                
-        }
+
+            }
+        }                
+    }
 }//GEN-LAST:event_BtnEditActionPerformed
 
     private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnEditKeyPressed

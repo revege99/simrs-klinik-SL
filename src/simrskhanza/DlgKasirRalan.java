@@ -2705,7 +2705,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                         System.out.println("Local Response Code: " + responseCodeLocal);
 
 
-                        URL urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() + "/webkhanzaAntrol/?page=function_panggil_antrean");
+                        URL urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() + "/webkhanza/?page=function_panggil_antrean");
                         HttpURLConnection conBPJS = (HttpURLConnection) urlBPJS.openConnection();
                         conBPJS.setRequestMethod("POST");
                         conBPJS.setDoOutput(true);
@@ -7163,7 +7163,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                     // 5️⃣ KIRIM KE BPJS
                     // =====================================================
                     URL urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
-                                          "/webkhanzaAntrol/?page=function_panggil_antrean");
+                                          "/webkhanza/?page=function_panggil_antrean");
 
                     HttpURLConnection conBPJS = (HttpURLConnection) urlBPJS.openConnection();
                     conBPJS.setRequestMethod("POST");
@@ -7381,7 +7381,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                     // 7️⃣ Kirim ke BPJS
                     // =====================================================
                     URL urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
-                                          "/webkhanzaAntrol/?page=function_panggil_antrean");
+                                          "/webkhanza/?page=function_panggil_antrean");
                     HttpURLConnection conBPJS = (HttpURLConnection) urlBPJS.openConnection();
                     conBPJS.setRequestMethod("POST");
                     conBPJS.setDoOutput(true);

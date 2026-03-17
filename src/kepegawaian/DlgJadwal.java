@@ -132,22 +132,47 @@ public class DlgJadwal extends javax.swing.JDialog {
             }else if(i==6){
                 column.setPreferredWidth(100);
             }else if(i==7){
-                column.setPreferredWidth(50);
+                column.setPreferredWidth(30);
             }
         }
         tbJadwal.setDefaultRenderer(Object.class, new WarnaTable());
         
            tabModeHfis = new DefaultTableModel(null,new String[]{
-            "No.","Kode Unit/Poli","Nama Unit/Poli","Kode Sub",
+            "No.","Kode Unit","Nama Unit","Kode Sub",
             "Nama Sub Spesialis","Kode Dokter",
             "Nama Dokter","Jam Praktek","Kapasitas"
         }){
            @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
-
+//        tbJadwal.setPreferredScrollableViewportSize(new Dimension(500,500));
+//        tbJadwal.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tbKamar.setModel(tabModeHfis);
         tbKamar.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tbKamar.setRowHeight(24);
+//        tbKamar.setRowHeight(24);
+        
+
+        for (int i = 0; i < 8; i++) {
+            TableColumn column = tbKamar.getColumnModel().getColumn(i);
+            if(i==0){
+                column.setPreferredWidth(20);
+            }else if(i==1){
+                column.setPreferredWidth(70);
+            }else if(i==2){
+                column.setPreferredWidth(120);
+            }else if(i==3){
+                column.setPreferredWidth(30);
+            }else if(i==4){
+                column.setPreferredWidth(30);
+            }else if(i==5){
+                column.setPreferredWidth(70);
+            }else if(i==6){
+                column.setPreferredWidth(170);
+            }else if(i==7){
+                column.setPreferredWidth(70);
+            }else if(i==8){
+                column.setPreferredWidth(30);
+            }
+        }
 
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
         kddokter.setDocument(new batasInput((byte)20).getKata(kddokter));
@@ -266,7 +291,6 @@ public class DlgJadwal extends javax.swing.JDialog {
         panelBiasa1 = new widget.PanelBiasa();
         jLabel3 = new widget.Label();
         nmdokter = new widget.TextBox();
-        jLabel4 = new widget.Label();
         jLabel9 = new widget.Label();
         jLabel10 = new widget.Label();
         TPoli = new widget.TextBox();
@@ -286,6 +310,8 @@ public class DlgJadwal extends javax.swing.JDialog {
         Kuota = new widget.TextBox();
         jLabel5 = new widget.Label();
         jLabel8 = new widget.Label();
+        jLabel13 = new widget.Label();
+        jLabel14 = new widget.Label();
         Scroll1 = new widget.ScrollPane();
         tbKamar = new widget.Table();
 
@@ -305,7 +331,7 @@ public class DlgJadwal extends javax.swing.JDialog {
         Scroll.setMinimumSize(new java.awt.Dimension(8, 16));
         Scroll.setName("Scroll"); // NOI18N
         Scroll.setOpaque(true);
-        Scroll.setPreferredSize(new java.awt.Dimension(700, 402));
+        Scroll.setPreferredSize(new java.awt.Dimension(670, 402));
 
         tbJadwal.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -510,7 +536,7 @@ public class DlgJadwal extends javax.swing.JDialog {
         LCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LCount.setText("0");
         LCount.setName("LCount"); // NOI18N
-        LCount.setPreferredSize(new java.awt.Dimension(150, 23));
+        LCount.setPreferredSize(new java.awt.Dimension(100, 23));
         panelGlass9.add(LCount);
 
         jLabel19.setText("Tanggal :");
@@ -519,7 +545,7 @@ public class DlgJadwal extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-02-2026" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-03-2026" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -572,11 +598,6 @@ public class DlgJadwal extends javax.swing.JDialog {
         });
         panelBiasa1.add(nmdokter);
         nmdokter.setBounds(191, 12, 397, 23);
-
-        jLabel4.setText("::[ Pencarian Data Referensi Dokter Mobile JKN FKTP ]::");
-        jLabel4.setName("jLabel4"); // NOI18N
-        panelBiasa1.add(jLabel4);
-        jLabel4.setBounds(700, 80, 270, 23);
 
         jLabel9.setText("Jam :");
         jLabel9.setName("jLabel9"); // NOI18N
@@ -749,12 +770,23 @@ public class DlgJadwal extends javax.swing.JDialog {
         jLabel8.setText("::[ Pencarian Data Referensi Dokter Mobile JKN FKTP ]::");
         jLabel8.setName("jLabel8"); // NOI18N
         panelBiasa1.add(jLabel8);
-        jLabel8.setBounds(700, 80, 270, 23);
+        jLabel8.setBounds(670, 80, 270, 23);
+
+        jLabel13.setText("::[ Pencarian Data Referensi Dokter Mobile JKN FKTP ]::");
+        jLabel13.setName("jLabel13"); // NOI18N
+        panelBiasa1.add(jLabel13);
+        jLabel13.setBounds(670, 80, 270, 23);
+
+        jLabel14.setText("::[ Pencarian Data Referensi Dokter Mobile JKN FKTP ]::");
+        jLabel14.setName("jLabel14"); // NOI18N
+        panelBiasa1.add(jLabel14);
+        jLabel14.setBounds(670, 80, 270, 23);
 
         internalFrame1.add(panelBiasa1, java.awt.BorderLayout.PAGE_START);
 
         Scroll1.setName("Scroll1"); // NOI18N
         Scroll1.setOpaque(true);
+        Scroll1.setPreferredSize(new java.awt.Dimension(480, 402));
 
         tbKamar.setAutoCreateRowSorter(true);
         tbKamar.setModel(new javax.swing.table.DefaultTableModel(
@@ -1126,9 +1158,10 @@ private void BtnPoliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private widget.Label jLabel10;
     private widget.Label jLabel11;
     private widget.Label jLabel12;
+    private widget.Label jLabel13;
+    private widget.Label jLabel14;
     private widget.Label jLabel19;
     private widget.Label jLabel3;
-    private widget.Label jLabel4;
     private widget.Label jLabel5;
     private widget.Label jLabel6;
     private widget.Label jLabel7;

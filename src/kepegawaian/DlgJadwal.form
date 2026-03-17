@@ -64,7 +64,7 @@
             <Property name="name" type="java.lang.String" value="Scroll" noResource="true"/>
             <Property name="opaque" type="boolean" value="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[700, 402]"/>
+              <Dimension value="[670, 402]"/>
             </Property>
           </Properties>
           <Constraints>
@@ -341,7 +341,7 @@
                     <Property name="text" type="java.lang.String" value="0"/>
                     <Property name="name" type="java.lang.String" value="LCount" noResource="true"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[100, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -361,7 +361,7 @@
                     </Property>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                       <StringArray count="1">
-                        <StringItem index="0" value="27-02-2026"/>
+                        <StringItem index="0" value="09-03-2026"/>
                       </StringArray>
                     </Property>
                     <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy"/>
@@ -441,17 +441,6 @@
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                   <AbsoluteConstraints x="191" y="12" width="397" height="23"/>
-                </Constraint>
-              </Constraints>
-            </Component>
-            <Component class="widget.Label" name="jLabel4">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="::[ Pencarian Data Referensi Dokter Mobile JKN FKTP ]::"/>
-                <Property name="name" type="java.lang.String" value="jLabel4" noResource="true"/>
-              </Properties>
-              <Constraints>
-                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                  <AbsoluteConstraints x="700" y="80" width="270" height="23"/>
                 </Constraint>
               </Constraints>
             </Component>
@@ -1036,7 +1025,29 @@
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                  <AbsoluteConstraints x="700" y="80" width="270" height="23"/>
+                  <AbsoluteConstraints x="670" y="80" width="270" height="23"/>
+                </Constraint>
+              </Constraints>
+            </Component>
+            <Component class="widget.Label" name="jLabel13">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="::[ Pencarian Data Referensi Dokter Mobile JKN FKTP ]::"/>
+                <Property name="name" type="java.lang.String" value="jLabel13" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+                  <AbsoluteConstraints x="670" y="80" width="270" height="23"/>
+                </Constraint>
+              </Constraints>
+            </Component>
+            <Component class="widget.Label" name="jLabel14">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="::[ Pencarian Data Referensi Dokter Mobile JKN FKTP ]::"/>
+                <Property name="name" type="java.lang.String" value="jLabel14" noResource="true"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+                  <AbsoluteConstraints x="670" y="80" width="270" height="23"/>
                 </Constraint>
               </Constraints>
             </Component>
@@ -1046,6 +1057,9 @@
           <Properties>
             <Property name="name" type="java.lang.String" value="Scroll1" noResource="true"/>
             <Property name="opaque" type="boolean" value="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[480, 402]"/>
+            </Property>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">

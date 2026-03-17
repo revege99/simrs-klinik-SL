@@ -2117,6 +2117,7 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     }
     
     private void buatcacheberiobat(){
+        System.out.println("Gudang : "+kdgudang.getText());
         try{
             file=new File("./cache/beriobatralan.iyem");
             file.createNewFile();

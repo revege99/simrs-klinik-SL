@@ -554,10 +554,10 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
 
 private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
     int row = tbDokter.getSelectedRow();
-if (row == -1) {
-    JOptionPane.showMessageDialog(null, "Pilih data dulu.");
-    return;
-}
+    if (row == -1) {
+        JOptionPane.showMessageDialog(null, "Pilih data dulu.");
+        return;
+    }
 
 // Ambil data dari tabel
 String kdObatSK    = tbDokter.getValueAt(row, 6).toString();

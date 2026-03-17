@@ -6988,6 +6988,18 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         });
         
         panelGlass9.add(BtnPanggilNext);
+        
+        BtnPanggilSkip = new JButton();
+        BtnPanggilSkip.setText("Panggil Skip");
+        BtnPanggilSkip.setName("BtnPanggil"); // NOI18N
+        BtnPanggilSkip.setPreferredSize(new java.awt.Dimension(120, 23));
+        BtnPanggilSkip.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnPanggilSkipActionPerformed(evt);
+            }
+        });
+        
+        panelGlass9.add(BtnPanggilSkip);
 
         internalFrame1.add(panelGlass9, java.awt.BorderLayout.PAGE_START);
         
@@ -7009,7 +7021,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         dispose();
 }//GEN-LAST:event_BtnKeluarActionPerformed
     
-        private void BtnPanggilActionPerformed(java.awt.event.ActionEvent evt) {
+       private void BtnPanggilActionPerformed(java.awt.event.ActionEvent evt) {                                             
 
             String kdDokter = KdPtg.getText().trim();
             String noRawat = "";
@@ -7022,27 +7034,27 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             try {
 
                 // =====================================================
-                // 1️⃣ CEK DI ANTRIPOLI (BELUM DIPANGGIL)
+                // 1️⃣ CEK DI ANTRIPOLI
                 // =====================================================
                 PreparedStatement ps1 = koneksi.prepareStatement(
                     "SELECT ap.no_rawat, ap.noReg, ap.tanggal, ps.nm_pasien " +
                     "FROM antripoli ap " +
                     "JOIN reg_periksa rp ON ap.no_rawat = rp.no_rawat " +
                     "JOIN pasien ps ON rp.no_rkm_medis = ps.no_rkm_medis " +
-                    "WHERE ap.kd_dokter=? " +
-                    "AND ap.tanggal=CURDATE() " +
-                    
-                    "ORDER BY CAST(ap.noReg AS UNSIGNED) ASC LIMIT 1"
+                    "WHERE ap.kd_dokter=? AND ap.tanggal=CURDATE() " +
+                    "ORDER BY CAST(SUBSTRING_INDEX(ap.noReg,'-',-1) AS UNSIGNED) ASC LIMIT 1"
                 );
 
                 ps1.setString(1, kdDokter);
                 ResultSet rs1 = ps1.executeQuery();
 
                 if (rs1.next()) {
+
                     noRawat   = rs1.getString("no_rawat");
                     noAntrian = rs1.getString("noReg");
                     nmPasien  = rs1.getString("nm_pasien");
                     tanggalReg = rs1.getString("tanggal");
+
                     sumber = "ANTRIPOLI";
                 }
 
@@ -7051,7 +7063,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
 
 
                 // =====================================================
-                // 2️⃣ JIKA TIDAK ADA → AMBIL DARI REG_PERIKSA
+                // 2️⃣ JIKA TIDAK ADA → REG_PERIKSA
                 // =====================================================
                 if (noRawat.equals("")) {
 
@@ -7060,9 +7072,8 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                         "FROM reg_periksa rp " +
                         "JOIN pasien ps ON rp.no_rkm_medis = ps.no_rkm_medis " +
                         "LEFT JOIN maping_poliklinik_pcare mp ON rp.kd_poli = mp.kd_poli_rs " +
-                        "WHERE rp.kd_dokter=? " +
-                        "AND rp.tgl_registrasi=CURDATE() " +
-                        "ORDER BY CAST(rp.no_reg AS UNSIGNED) ASC LIMIT 1"
+                        "WHERE rp.kd_dokter=? AND rp.tgl_registrasi=CURDATE() " +
+                        "ORDER BY CAST(SUBSTRING_INDEX(rp.no_reg,'-',-1) AS UNSIGNED) ASC LIMIT 1"
                     );
 
                     ps2.setString(1, kdDokter);
@@ -7075,6 +7086,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                         nmPasien    = rs2.getString("nm_pasien");
                         tanggalReg  = rs2.getString("tgl_registrasi");
                         kdPoliPcare = rs2.getString("kd_poli_pcare");
+
                         sumber = "REG_PERIKSA";
 
                         if (kdPoliPcare == null || kdPoliPcare.trim().equals("")) {
@@ -7083,16 +7095,13 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                             return;
                         }
 
-                        // INSERT KE ANTRIPOLI
                         PreparedStatement psInsert = koneksi.prepareStatement(
-                            "INSERT INTO antripoli " +
-                            "(kd_dokter,kd_poli,status,no_rawat,noReg,tanggal) " +
-                            "VALUES (?,?,?,?,?,?)"
+                            "INSERT INTO antripoli(kd_dokter,kd_poli,status,no_rawat,noReg,tanggal) VALUES (?,?,?,?,?,?)"
                         );
 
                         psInsert.setString(1, kdDokter);
                         psInsert.setString(2, kdPoliPcare);
-                        psInsert.setString(3, "0"); // default belum dipanggil
+                        psInsert.setString(3, "0");
                         psInsert.setString(4, noRawat);
                         psInsert.setString(5, noAntrian);
                         psInsert.setDate(6, java.sql.Date.valueOf(tanggalReg));
@@ -7107,20 +7116,25 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
 
 
                 // =====================================================
-                // 3️⃣ JIKA ADA DATA → UPDATE STATUS JADI DIPANGGIL
+                // 3️⃣ JIKA ADA PASIEN
                 // =====================================================
                 if (!noRawat.equals("")) {
 
+                    // =====================================================
+                    // UPDATE STATUS DIPANGGIL
+                    // =====================================================
                     PreparedStatement psUpdate = koneksi.prepareStatement(
-                        "UPDATE antripoli SET status='1' " +
-                        "WHERE no_rawat=? AND tanggal=CURDATE()"
+                        "UPDATE antripoli SET status='1' WHERE no_rawat=? AND tanggal=CURDATE()"
                     );
+
                     psUpdate.setString(1, noRawat);
                     psUpdate.executeUpdate();
                     psUpdate.close();
 
 
+                    // =====================================================
                     // Ambil nama dokter & poli
+                    // =====================================================
                     String namaDokter = Sequel.cariIsi(
                         "SELECT nm_dokter FROM dokter WHERE kd_dokter=?",
                         kdDokter
@@ -7135,12 +7149,13 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
 
 
                     // =====================================================
-                    // 4️⃣ KIRIM KE DISPLAY
+                    // KIRIM DISPLAY (LANGSUNG)
                     // =====================================================
                     URL urlLocal = new URL("http://" + koneksiDB.HOSTCALL() + "/" +
                                            koneksiDB.FOLDERCALL() + "/simpan.php");
 
                     HttpURLConnection conLocal = (HttpURLConnection) urlLocal.openConnection();
+
                     conLocal.setRequestMethod("POST");
                     conLocal.setDoOutput(true);
                     conLocal.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -7151,45 +7166,149 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                         "&dokter=" + URLEncoder.encode(namaDokter, "UTF-8") +
                         "&spesialis=" + URLEncoder.encode(namaPoli, "UTF-8");
 
-                    try (DataOutputStream wr = new DataOutputStream(conLocal.getOutputStream())) {
-                        wr.writeBytes(localParams);
-                        wr.flush();
-                    }
+                    DataOutputStream wr = new DataOutputStream(conLocal.getOutputStream());
+                    wr.writeBytes(localParams);
+                    wr.flush();
+                    wr.close();
 
                     int responseCodeLocal = conLocal.getResponseCode();
 
 
                     // =====================================================
-                    // 5️⃣ KIRIM KE BPJS
+                    // DIALOG STATUS PASIEN
                     // =====================================================
-                    URL urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
-                                          "/webkhanza/?page=function_panggil_antrean");
+                    String[] options = {"Hadir","Tidak Hadir","Skip"};
+
+                    int pilihan = JOptionPane.showOptionDialog(
+                        null,
+                        "Pasien dipanggil\n\n"+
+                        "No Antrian : "+noAntrian+"\n"+
+                        "Pasien     : "+nmPasien+"\n\n"+
+                        "Status pasien?",
+                        "Konfirmasi Kehadiran",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[0]
+                    );
+
+                    if(pilihan==-1){
+                        return;
+                    }
+
+                    // =====================================================
+                    // SKIP
+                    // =====================================================
+                    if(pilihan==2){
+
+                        PreparedStatement psSkip = koneksi.prepareStatement(
+                            "INSERT INTO antrian_skip(kd_dokter,no_rawat,no_reg,tanggal) VALUES(?,?,?,NOW())"
+                        );
+
+                        psSkip.setString(1,kdDokter);
+                        psSkip.setString(2,noRawat);
+                        psSkip.setString(3,noAntrian);
+
+                        psSkip.executeUpdate();
+                        psSkip.close();
+
+                        JOptionPane.showMessageDialog(null,"Pasien di SKIP dari antrian.");
+                        return;
+                    }
+
+
+                    // =====================================================
+                    // BPJS
+                    // =====================================================
+                    URL urlBPJS;
+
+                    if(pilihan==1){
+
+                        urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
+                                "/webkhanza/?page=function_pasien_tidakhadir");
+
+                    }else{
+
+                        urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
+                                "/webkhanza/?page=function_panggil_antrean");
+
+                    }
 
                     HttpURLConnection conBPJS = (HttpURLConnection) urlBPJS.openConnection();
+
                     conBPJS.setRequestMethod("POST");
                     conBPJS.setDoOutput(true);
                     conBPJS.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
                     String bpjsParams = "no_rawat=" + URLEncoder.encode(noRawat, "UTF-8");
 
-                    try (DataOutputStream wr2 = new DataOutputStream(conBPJS.getOutputStream())) {
-                        wr2.writeBytes(bpjsParams);
-                        wr2.flush();
-                    }
+                    DataOutputStream wr2 = new DataOutputStream(conBPJS.getOutputStream());
+                    wr2.writeBytes(bpjsParams);
+                    wr2.flush();
+                    wr2.close();
 
                     int responseCodeBPJS = conBPJS.getResponseCode();
-                    StringBuilder responseBPJS = new StringBuilder();
 
-                    try (BufferedReader in = new BufferedReader(
-                            new InputStreamReader(conBPJS.getInputStream()))) {
 
-                        String line;
-                        while ((line = in.readLine()) != null) {
-                            responseBPJS.append(line);
-                        }
+                    // =====================================================
+                    // BACA RESPON BPJS
+                    // =====================================================
+                    BufferedReader in;
+
+                    if(responseCodeBPJS>=400){
+                        in = new BufferedReader(new InputStreamReader(conBPJS.getErrorStream()));
+                    }else{
+                        in = new BufferedReader(new InputStreamReader(conBPJS.getInputStream()));
                     }
 
-                    // 6️⃣ INFORMASI KE USER (VERSI PROFESIONAL)
+                    StringBuilder responseBPJS = new StringBuilder();
+                    String line;
+
+                    while((line=in.readLine())!=null){
+                        responseBPJS.append(line);
+                    }
+
+                    in.close();
+                    // =====================================================
+                    // DEBUG BPJS RESPONSE (TERMINAL)
+                    // =====================================================
+                    System.out.println("====================================");
+                    System.out.println("DEBUG BPJS RESPONSE");
+                    System.out.println("No Rawat : " + noRawat);
+                    System.out.println("URL      : " + urlBPJS.toString());
+                    System.out.println("HTTP Code: " + responseCodeBPJS);
+                    System.out.println("Response : ");
+                    System.out.println(responseBPJS.toString());
+                    System.out.println("====================================");
+
+                    String pesanBPJS="Tidak ada pesan dari BPJS";
+
+                    try{
+
+                        String raw=responseBPJS.toString();
+                        int jsonStart=raw.indexOf("{");
+
+                        if(jsonStart!=-1){
+
+                            String jsonOnly=raw.substring(jsonStart);
+
+                            org.json.JSONObject obj=new org.json.JSONObject(jsonOnly);
+                            org.json.JSONObject metadata=obj.getJSONObject("metadata");
+
+                            pesanBPJS=metadata.getString("message");
+
+                        }
+
+                    }catch(Exception ex){
+
+                        pesanBPJS="Gagal membaca respon BPJS";
+
+                    }
+
+
+                    // =====================================================
+                    // INFORMASI SISTEM
                     // =====================================================
                     StringBuilder message = new StringBuilder();
 
@@ -7197,40 +7316,21 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
 
                     message.append("Sumber Data : ").append(sumber).append("\n\n");
 
-                    message.append("No. Rawat   : ").append(noRawat).append("\n");
-                    message.append("No. Antrian : ").append(noAntrian).append("\n");
-                    message.append("Pasien      : ").append(nmPasien).append("\n\n");
+                    message.append("No Rawat   : ").append(noRawat).append("\n");
+                    message.append("No Antrian : ").append(noAntrian).append("\n");
+                    message.append("Pasien     : ").append(nmPasien).append("\n\n");
 
                     message.append("Status Sistem\n");
-                    message.append("- Display   : ")
-                           .append(responseCodeLocal == 200
-                               ? "Berhasil"
-                               : "Gagal (HTTP " + responseCodeLocal + ")")
+
+                    message.append("Display : ")
+                           .append(responseCodeLocal==200?"Berhasil":"Gagal")
                            .append("\n");
 
-                    message.append("- BPJS      : ")
-                           .append(responseCodeBPJS == 200
-                               ? "Berhasil"
-                               : "Gagal (HTTP " + responseCodeBPJS + ")")
-                           .append("\n");
+                    message.append("BPJS    : ")
+                           .append(responseCodeBPJS==200?"Berhasil":"Gagal")
+                           .append("\n\n");
 
-                    // ===== Ambil pesan BPJS (aman & rapi) =====
-                    String pesanBPJS = "Tidak ada pesan dari BPJS";
-                    String rawResponse = responseBPJS.toString();
-
-                    try {
-                        int jsonStart = rawResponse.indexOf("{");
-                        if (jsonStart != -1) {
-                            String jsonOnly = rawResponse.substring(jsonStart);
-                            org.json.JSONObject obj = new org.json.JSONObject(jsonOnly);
-                            org.json.JSONObject metadata = obj.getJSONObject("metadata");
-                            pesanBPJS = metadata.getString("message");
-                        }
-                    } catch (Exception ex) {
-                        pesanBPJS = "Gagal membaca respon BPJS";
-                    }
-
-                    message.append("\nPesan BPJS\n");
+                    message.append("Pesan BPJS\n");
                     message.append(pesanBPJS);
 
                     JOptionPane.showMessageDialog(
@@ -7241,236 +7341,603 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                     );
 
                 } else {
+
                     JOptionPane.showMessageDialog(null,
                         "Tidak ada pasien untuk dokter ini hari ini.");
+
                 }
 
             } catch (Exception e) {
+
                 JOptionPane.showMessageDialog(null,
                     "Terjadi error : " + e.getMessage());
+
             }
         }
-    
-       private void BtnPanggilNextActionPerformed(java.awt.event.ActionEvent evt) {
-            String kdDokter = KdPtg.getText().trim();
-            try {
-                String lastNoReg = "";
-                int lastUrut = 0;
-                String sumber = "REG_PERIKSA (NEXT)";
-                // =====================================================
-                // 1️⃣ Ambil noReg terakhir dari antripoli
-                // =====================================================
-                PreparedStatement psLast = koneksi.prepareStatement(
-                    "SELECT noReg FROM antripoli " +
-                    "WHERE kd_dokter=? AND tanggal=CURDATE() " +
-                    "ORDER BY CAST(SUBSTRING_INDEX(noReg,'-',-1) AS UNSIGNED) DESC LIMIT 1"
-                );
-                psLast.setString(1, kdDokter);
-                ResultSet rsLast = psLast.executeQuery();
+       
+       private void BtnPanggilNextActionPerformed(java.awt.event.ActionEvent evt) {                                             
 
-                if (rsLast.next()) {
-                    lastNoReg = rsLast.getString("noReg");
+        String kdDokter = KdPtg.getText().trim();
 
-                    if (lastNoReg != null && lastNoReg.contains("-")) {
-                        String[] parts = lastNoReg.split("-");
-                        lastUrut = Integer.parseInt(parts[1]);
-                    }
+        try {
+
+            String lastNoReg = "";
+            int lastUrut = 0;
+
+            // ===============================
+            // 1️⃣ Ambil antrian terakhir
+            // ===============================
+            PreparedStatement psLast = koneksi.prepareStatement(
+                "SELECT noReg FROM antripoli " +
+                "WHERE kd_dokter=? AND tanggal=CURDATE() " +
+                "ORDER BY CAST(SUBSTRING_INDEX(noReg,'-',-1) AS UNSIGNED) DESC LIMIT 1"
+            );
+
+            psLast.setString(1, kdDokter);
+            ResultSet rsLast = psLast.executeQuery();
+
+            if (rsLast.next()) {
+
+                lastNoReg = rsLast.getString("noReg");
+
+                if (lastNoReg != null && lastNoReg.contains("-")) {
+                    String[] parts = lastNoReg.split("-");
+                    lastUrut = Integer.parseInt(parts[1]);
                 }
-                rsLast.close();
-                psLast.close();
-                System.out.println("Last NoReg : " + lastNoReg);
-                System.out.println("Last Urut  : " + lastUrut);
-                // =====================================================
-                // 2️⃣ Cari antrian berikutnya
-                // =====================================================
-                PreparedStatement psNext = koneksi.prepareStatement(
-                    "SELECT rp.no_rawat, rp.no_reg, rp.tgl_registrasi, ps.nm_pasien, pp.kd_poli_pcare as kd_poli " +
-                    "FROM reg_periksa rp " +
-                    "JOIN pasien ps ON rp.no_rkm_medis = ps.no_rkm_medis " +
-                    "JOIN maping_poliklinik_pcare pp on rp.kd_poli = pp.kd_poli_rs " +
-                    "WHERE rp.kd_dokter=? " +
-                    "AND rp.tgl_registrasi=CURDATE() " +
-                    "AND CAST(SUBSTRING_INDEX(rp.no_reg,'-',-1) AS UNSIGNED) > ? " +
-                    "ORDER BY CAST(SUBSTRING_INDEX(rp.no_reg,'-',-1) AS UNSIGNED) ASC LIMIT 1"
+            }
+
+            rsLast.close();
+            psLast.close();
+
+
+            // ===============================
+            // 2️⃣ Cari pasien berikutnya
+            // ===============================
+            PreparedStatement psNext = koneksi.prepareStatement(
+                "SELECT rp.no_rawat, rp.no_reg, rp.tgl_registrasi, ps.nm_pasien, pp.kd_poli_pcare as kd_poli " +
+                "FROM reg_periksa rp " +
+                "JOIN pasien ps ON rp.no_rkm_medis = ps.no_rkm_medis " +
+                "JOIN maping_poliklinik_pcare pp on rp.kd_poli = pp.kd_poli_rs " +
+                "WHERE rp.kd_dokter=? " +
+                "AND rp.tgl_registrasi=CURDATE() " +
+                "AND CAST(SUBSTRING_INDEX(rp.no_reg,'-',-1) AS UNSIGNED) > ? " +
+                "ORDER BY CAST(SUBSTRING_INDEX(rp.no_reg,'-',-1) AS UNSIGNED) ASC LIMIT 1"
+            );
+
+            psNext.setString(1, kdDokter);
+            psNext.setInt(2, lastUrut);
+
+            ResultSet rsNext = psNext.executeQuery();
+
+            if (!rsNext.next()) {
+
+                JOptionPane.showMessageDialog(null,"Sudah antrian terakhir hari ini.");
+                rsNext.close();
+                psNext.close();
+                return;
+            }
+
+            String newNoRawat  = rsNext.getString("no_rawat");
+            String newNoReg    = rsNext.getString("no_reg");
+            String newTanggal  = rsNext.getString("tgl_registrasi");
+            String nmPasien    = rsNext.getString("nm_pasien");
+            String kdPoli      = rsNext.getString("kd_poli");
+
+            rsNext.close();
+            psNext.close();
+
+
+            // ===============================
+            // 3️⃣ Hapus antrian lama
+            // ===============================
+            PreparedStatement psDelete = koneksi.prepareStatement(
+                "DELETE FROM antripoli WHERE kd_dokter=? AND tanggal=CURDATE()"
+            );
+
+            psDelete.setString(1,kdDokter);
+            psDelete.executeUpdate();
+            psDelete.close();
+
+
+            // ===============================
+            // 4️⃣ Insert antrian baru
+            // ===============================
+            PreparedStatement psInsert = koneksi.prepareStatement(
+                "INSERT INTO antripoli(kd_dokter,kd_poli,status,no_rawat,noReg,tanggal) VALUES (?,?,?,?,?,?)"
+            );
+
+            psInsert.setString(1,kdDokter);
+            psInsert.setString(2,kdPoli);
+            psInsert.setString(3,"1");
+            psInsert.setString(4,newNoRawat);
+            psInsert.setString(5,newNoReg);
+            psInsert.setDate(6,java.sql.Date.valueOf(newTanggal));
+
+            psInsert.executeUpdate();
+            psInsert.close();
+
+
+            // ===============================
+            // 5️⃣ Ambil nama dokter & poli
+            // ===============================
+            String namaDokter = Sequel.cariIsi(
+                "SELECT nm_dokter FROM dokter WHERE kd_dokter=?",
+                kdDokter
+            );
+
+            String namaPoli = Sequel.cariIsi(
+                "SELECT nm_poli FROM poliklinik p " +
+                "JOIN reg_periksa r ON p.kd_poli=r.kd_poli " +
+                "WHERE r.no_rawat=?",
+                newNoRawat
+            );
+
+
+            // ===============================
+            // 6️⃣ Kirim ke Display (LANGSUNG)
+            // ===============================
+            URL urlLocal = new URL("http://" + koneksiDB.HOSTCALL() + "/" +
+                                   koneksiDB.FOLDERCALL() + "/simpan.php");
+
+            HttpURLConnection conLocal = (HttpURLConnection) urlLocal.openConnection();
+            conLocal.setRequestMethod("POST");
+            conLocal.setDoOutput(true);
+            conLocal.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+
+            String localParams =
+                "nama="+URLEncoder.encode(nmPasien,"UTF-8")+
+                "&nomor="+URLEncoder.encode(newNoReg,"UTF-8")+
+                "&dokter="+URLEncoder.encode(namaDokter,"UTF-8")+
+                "&spesialis="+URLEncoder.encode(namaPoli,"UTF-8");
+
+            DataOutputStream wr = new DataOutputStream(conLocal.getOutputStream());
+            wr.writeBytes(localParams);
+            wr.flush();
+            wr.close();
+
+            int responseCodeLocal = conLocal.getResponseCode();
+
+
+            // ===============================
+            // 7️⃣ Dialog Status
+            // ===============================
+            String[] options = {"Hadir","Tidak Hadir","Skip"};
+
+            int pilihan = JOptionPane.showOptionDialog(
+                null,
+                "Pasien dipanggil\n\n"+
+                "No Reg : "+newNoReg+"\n"+
+                "Nama   : "+nmPasien+"\n\n"+
+                "Status pasien?",
+                "Konfirmasi Kehadiran",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+            );
+
+            if(pilihan==-1){
+                return;
+            }
+
+            if(pilihan==2){
+
+                PreparedStatement psSkip = koneksi.prepareStatement(
+                    "INSERT INTO antrian_skip(kd_dokter,no_rawat,no_reg,tanggal) VALUES(?,?,?,NOW())"
                 );
-                psNext.setString(1, kdDokter);
-                psNext.setInt(2, lastUrut);
-                ResultSet rsNext = psNext.executeQuery();
-                if (rsNext.next()) {
-                    String newNoRawat  = rsNext.getString("no_rawat");
-                    String newNoReg    = rsNext.getString("no_reg");
-                    String newTanggal  = rsNext.getString("tgl_registrasi");
-                    String nmPasien    = rsNext.getString("nm_pasien");
-                    String kdPoli      = rsNext.getString("kd_poli");
-                    System.out.println("Next NoRawat : " + newNoRawat);
-                    System.out.println("Next NoReg   : " + newNoReg);
-                    System.out.println("Pasien       : " + nmPasien);
-                    System.out.println("kd Poli      : " + kdPoli);
 
-                    rsNext.close();
-                    psNext.close();
-                    // =====================================================
-                    // 3️⃣ Hapus data lama
-                    // =====================================================
-                    PreparedStatement psDelete = koneksi.prepareStatement(
-                        "DELETE FROM antripoli WHERE kd_dokter=? AND tanggal=CURDATE()"
-                    );
-                    psDelete.setString(1, kdDokter);
-                    psDelete.executeUpdate();
-                    psDelete.close();
+                psSkip.setString(1,kdDokter);
+                psSkip.setString(2,newNoRawat);
+                psSkip.setString(3,newNoReg);
 
-                    // =====================================================
-                    // 4️⃣ Insert baru
-                    // =====================================================
-                    PreparedStatement psInsert = koneksi.prepareStatement(
-                        "INSERT INTO antripoli " +
-                        "(kd_dokter,kd_poli,status,no_rawat,noReg,tanggal) " +
-                        "VALUES (?,?,?,?,?,?)"
-                    );
+                psSkip.executeUpdate();
+                psSkip.close();
 
-                    psInsert.setString(1, kdDokter);
-                    psInsert.setString(2, kdPoli);
-                    psInsert.setString(3, "1");
-                    psInsert.setString(4, newNoRawat);
-                    psInsert.setString(5, newNoReg);
-                    psInsert.setDate(6, java.sql.Date.valueOf(newTanggal));
-
-                    psInsert.executeUpdate();
-                    psInsert.close();
+                JOptionPane.showMessageDialog(null,"Pasien di SKIP dari antrian.");
+                return;
+            }
 
 
-                    // =====================================================
-                    // 5️⃣ Ambil nama dokter & poli
-                    // =====================================================
-                    String namaDokter = Sequel.cariIsi(
-                        "SELECT nm_dokter FROM dokter WHERE kd_dokter=?",
-                        kdDokter
-                    );
+            // ===============================
+            // 8️⃣ Kirim BPJS
+            // ===============================
+            URL urlBPJS;
 
-                    String namaPoli = Sequel.cariIsi(
-                        "SELECT nm_poli FROM poliklinik p " +
-                        "JOIN reg_periksa r ON p.kd_poli=r.kd_poli " +
-                        "WHERE r.no_rawat=?",
-                        newNoRawat
-                    );
+            if(pilihan==1){
+                urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
+                                  "/webkhanza/?page=function_pasien_tidakhadir");
+            }else{
+                urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
+                                  "/webkhanza/?page=function_panggil_antrean");
+            }
 
-                    // =====================================================
-                    // 6️⃣ Kirim ke Display
-                    // =====================================================
-                    URL urlLocal = new URL("http://" + koneksiDB.HOSTCALL() + "/" +
-                                           koneksiDB.FOLDERCALL() + "/simpan.php");
-                    HttpURLConnection conLocal = (HttpURLConnection) urlLocal.openConnection();
-                    conLocal.setRequestMethod("POST");
-                    conLocal.setDoOutput(true);
-                    conLocal.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    String localParams =
-                        "nama=" + URLEncoder.encode(nmPasien, "UTF-8") +
-                        "&nomor=" + URLEncoder.encode(newNoReg, "UTF-8") +
-                        "&dokter=" + URLEncoder.encode(namaDokter, "UTF-8") +
-                        "&spesialis=" + URLEncoder.encode(namaPoli, "UTF-8");
+            HttpURLConnection conBPJS = (HttpURLConnection) urlBPJS.openConnection();
 
-                    try (DataOutputStream wr = new DataOutputStream(conLocal.getOutputStream())) {
-                        wr.writeBytes(localParams);
-                        wr.flush();
-                    }
+            conBPJS.setRequestMethod("POST");
+            conBPJS.setDoOutput(true);
+            conBPJS.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
 
-                    int responseCodeLocal = conLocal.getResponseCode();
+            String bpjsParams="no_rawat="+URLEncoder.encode(newNoRawat,"UTF-8");
+
+            DataOutputStream wr2 = new DataOutputStream(conBPJS.getOutputStream());
+            wr2.writeBytes(bpjsParams);
+            wr2.flush();
+            wr2.close();
+
+            int responseCodeBPJS = conBPJS.getResponseCode();
 
 
-                    // =====================================================
-                    // 7️⃣ Kirim ke BPJS
-                    // =====================================================
-                    URL urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
-                                          "/webkhanza/?page=function_panggil_antrean");
-                    HttpURLConnection conBPJS = (HttpURLConnection) urlBPJS.openConnection();
-                    conBPJS.setRequestMethod("POST");
-                    conBPJS.setDoOutput(true);
-                    conBPJS.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    String bpjsParams = "no_rawat=" + URLEncoder.encode(newNoRawat, "UTF-8");
-                    try (DataOutputStream wr2 = new DataOutputStream(conBPJS.getOutputStream())) {
-                        wr2.writeBytes(bpjsParams);
-                        wr2.flush();
-                    }
-                    int responseCodeBPJS = conBPJS.getResponseCode();
-                    StringBuilder responseBPJS = new StringBuilder();
-                    try (BufferedReader in = new BufferedReader(
-                            new InputStreamReader(conBPJS.getInputStream()))) {
-                        String line;
-                        while ((line = in.readLine()) != null) {
-                            responseBPJS.append(line);
-                        }
-                    }
+            // ===============================
+            // 🔍 Ambil respon BPJS
+            // ===============================
+            BufferedReader in;
 
-                    System.out.println("Response BPJS panggil next : " + responseBPJS.toString());
+            if(responseCodeBPJS >= 400){
+                in = new BufferedReader(new InputStreamReader(conBPJS.getErrorStream()));
+            }else{
+                in = new BufferedReader(new InputStreamReader(conBPJS.getInputStream()));
+            }
 
-                    // 8️⃣ Show Message (FOKUS USER FRIENDLY)
-                    // =====================================================
-                    StringBuilder message = new StringBuilder();
+            StringBuilder responseBPJS = new StringBuilder();
+            String line;
 
-                    message.append("Informasi Antrian Berikutnya\n\n");
+            while((line=in.readLine())!=null){
+                responseBPJS.append(line);
+            }
 
-                    message.append("No. Rawat   : ").append(newNoRawat).append("\n");
-                    message.append("No. Reg     : ").append(newNoReg).append("\n");
-                    message.append("Pasien      : ").append(nmPasien).append("\n");
-                    message.append("Kode Poli   : ").append(kdPoli).append("\n\n");
-
-                    message.append("Status Pengiriman\n");
-                    message.append("- Display   : ")
-                           .append(responseCodeLocal == 200
-                               ? "Berhasil"
-                               : "Gagal (HTTP " + responseCodeLocal + ")")
-                           .append("\n");
-
-                    message.append("- BPJS      : ")
-                           .append(responseCodeBPJS == 200
-                               ? "Berhasil"
-                               : "Gagal (HTTP " + responseCodeBPJS + ")")
-                           .append("\n");
-
-                    // ===== Ambil pesan BPJS (tanpa ganggu request) =====
-                    String pesanBPJS = "Tidak ada pesan dari BPJS";
-                    String rawResponse = responseBPJS.toString();
-
-                    try {
-                        int jsonStart = rawResponse.indexOf("{");
-                        if (jsonStart != -1) {
-                            String jsonOnly = rawResponse.substring(jsonStart);
-
-                            org.json.JSONObject obj = new org.json.JSONObject(jsonOnly);
-                            org.json.JSONObject metadata = obj.getJSONObject("metadata");
-                            pesanBPJS = metadata.getString("message");
-                        }
-                    } catch (Exception ex) {
-                        pesanBPJS = "Gagal membaca respon BPJS";
-                    }
-
-                    message.append("\nPesan BPJS\n");
-                    message.append(pesanBPJS);
-
-                    // ===== Tampilkan ke user (SATU dialog) =====
-                    JOptionPane.showMessageDialog(
-                        null,
-                        message.toString(),
-                        "Informasi Sistem",
-                        JOptionPane.INFORMATION_MESSAGE
-                    );
+            in.close();
 
 
-                } else {
+            // ===============================
+            // 🔧 DEBUG TERMINAL
+            // ===============================
+            System.out.println("====================================");
+            System.out.println("DEBUG BPJS RESPONSE");
+            System.out.println("No Rawat : " + newNoRawat);
+            System.out.println("URL      : " + urlBPJS.toString());
+            System.out.println("HTTP Code: " + responseCodeBPJS);
+            System.out.println("Response : ");
+            System.out.println(responseBPJS.toString());
+            System.out.println("====================================");
 
-                    rsNext.close();
-                    psNext.close();
+
+            // ===============================
+            // 🔎 Ambil pesan JSON BPJS
+            // ===============================
+            String pesanBPJS="Tidak ada pesan dari BPJS";
+
+            try{
+
+                String raw=responseBPJS.toString();
+                int jsonStart=raw.indexOf("{");
+
+                if(jsonStart!=-1){
+
+                    String jsonOnly=raw.substring(jsonStart);
+
+                    org.json.JSONObject obj=new org.json.JSONObject(jsonOnly);
+                    org.json.JSONObject metadata=obj.getJSONObject("metadata");
+
+                    pesanBPJS=metadata.getString("message");
+                }
+
+            }catch(Exception ex){
+
+                pesanBPJS="Gagal membaca respon BPJS";
+            }
+
+
+            // ===============================
+            // 9️⃣ Tampilkan ke user
+            // ===============================
+            StringBuilder message = new StringBuilder();
+
+            message.append("Informasi Antrian\n\n");
+
+            message.append("No Rawat : ").append(newNoRawat).append("\n");
+            message.append("No Reg   : ").append(newNoReg).append("\n");
+            message.append("Pasien   : ").append(nmPasien).append("\n\n");
+
+            message.append("Status Pengiriman\n");
+
+            message.append("Display : ")
+                   .append(responseCodeLocal==200?"Berhasil":"Gagal")
+                   .append("\n");
+
+            message.append("BPJS    : ")
+                   .append(responseCodeBPJS==200?"Berhasil":"Gagal")
+                   .append("\n\n");
+
+            message.append("Pesan BPJS\n");
+            message.append(pesanBPJS);
+
+            JOptionPane.showMessageDialog(
+                null,
+                message.toString(),
+                "Informasi Sistem",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            JOptionPane.showMessageDialog(null,
+                "Terjadi error : "+e.getMessage());
+        }
+    }
+       private void BtnPanggilSkipActionPerformed(java.awt.event.ActionEvent evt) {                                             
+
+            String kdDokter = KdPtg.getText().trim();
+
+            try {
+
+                String noRawat = "";
+                String noReg   = "";
+                String nmPasien = "";
+
+                // ===============================
+                // 1️⃣ Cari skip paling awal
+                // ===============================
+                PreparedStatement ps = koneksi.prepareStatement(
+                    "SELECT s.no_rawat, s.no_reg, p.nm_pasien " +
+                    "FROM antrian_skip s " +
+                    "JOIN reg_periksa r ON s.no_rawat=r.no_rawat " +
+                    "JOIN pasien p ON r.no_rkm_medis=p.no_rkm_medis " +
+                    "WHERE s.kd_dokter=? " +
+                    "ORDER BY s.tanggal ASC LIMIT 1"
+                );
+
+                ps.setString(1,kdDokter);
+                ResultSet rs = ps.executeQuery();
+
+                if(!rs.next()){
 
                     JOptionPane.showMessageDialog(null,
-                        "Sudah antrian terakhir hari ini.");
+                        "Tidak ada pasien dalam antrian skip.");
+
+                    rs.close();
+                    ps.close();
+                    return;
                 }
 
+                noRawat  = rs.getString("no_rawat");
+                noReg    = rs.getString("no_reg");
+                nmPasien = rs.getString("nm_pasien");
+
+                rs.close();
+                ps.close();
+
+
+                // ===============================
+                // 2️⃣ Ambil nama dokter & poli
+                // ===============================
+                String namaDokter = Sequel.cariIsi(
+                    "SELECT nm_dokter FROM dokter WHERE kd_dokter=?",
+                    kdDokter
+                );
+
+                String namaPoli = Sequel.cariIsi(
+                    "SELECT nm_poli FROM poliklinik p " +
+                    "JOIN reg_periksa r ON p.kd_poli=r.kd_poli " +
+                    "WHERE r.no_rawat=?",
+                    noRawat
+                );
+
+
+                // ===============================
+                // 3️⃣ Kirim ke Display
+                // ===============================
+                URL urlLocal = new URL("http://" + koneksiDB.HOSTCALL() + "/" +
+                                       koneksiDB.FOLDERCALL() + "/simpan.php");
+
+                HttpURLConnection conLocal = (HttpURLConnection) urlLocal.openConnection();
+
+                conLocal.setRequestMethod("POST");
+                conLocal.setDoOutput(true);
+                conLocal.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+
+                String localParams =
+                    "nama="+URLEncoder.encode(nmPasien,"UTF-8")+
+                    "&nomor="+URLEncoder.encode(noReg,"UTF-8")+
+                    "&dokter="+URLEncoder.encode(namaDokter,"UTF-8")+
+                    "&spesialis="+URLEncoder.encode(namaPoli,"UTF-8");
+
+                DataOutputStream wr = new DataOutputStream(conLocal.getOutputStream());
+                wr.writeBytes(localParams);
+                wr.flush();
+                wr.close();
+
+                int responseCodeLocal = conLocal.getResponseCode();
+
+
+                // ===============================
+                // 4️⃣ Dialog Status
+                // ===============================
+                String[] options = {"Hadir","Tidak Hadir","Skip"};
+
+                int pilihan = JOptionPane.showOptionDialog(
+                    null,
+                    "Memanggil dari antrian SKIP\n\n"+
+                    "No Reg : "+noReg+"\n"+
+                    "Nama   : "+nmPasien+"\n\n"+
+                    "Status pasien?",
+                    "Konfirmasi Kehadiran",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]
+                );
+
+                if(pilihan==-1){
+                    return;
+                }
+
+
+                // ===============================
+                // Jika SKIP lagi
+                // ===============================
+                if(pilihan==2){
+
+                    PreparedStatement psUpdate = koneksi.prepareStatement(
+                        "UPDATE antrian_skip SET tanggal=NOW() WHERE no_rawat=?"
+                    );
+
+                    psUpdate.setString(1,noRawat);
+                    psUpdate.executeUpdate();
+                    psUpdate.close();
+
+                    JOptionPane.showMessageDialog(null,
+                        "Pasien tetap dalam antrian skip.");
+
+                    return;
+                }
+                
+                // ===============================
+                // Hapus dari tabel skip
+                // ===============================
+                PreparedStatement psDeleteSkip = koneksi.prepareStatement(
+                    "DELETE FROM antrian_skip WHERE no_rawat=?"
+                );
+
+                psDeleteSkip.setString(1,noRawat);
+                psDeleteSkip.executeUpdate();
+                psDeleteSkip.close();
+
+                // ===============================
+                // 5️⃣ Kirim BPJS
+                // ===============================
+                URL urlBPJS;
+
+                if(pilihan==1){
+
+                    urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
+                                      "/webkhanza/?page=function_pasien_tidakhadir");
+
+                }else{
+
+                    urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
+                                      "/webkhanza/?page=function_panggil_antrean");
+                }
+
+                HttpURLConnection conBPJS = (HttpURLConnection) urlBPJS.openConnection();
+
+                conBPJS.setRequestMethod("POST");
+                conBPJS.setDoOutput(true);
+                conBPJS.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+
+                String bpjsParams="no_rawat="+URLEncoder.encode(noRawat,"UTF-8");
+
+                DataOutputStream wr2 = new DataOutputStream(conBPJS.getOutputStream());
+                wr2.writeBytes(bpjsParams);
+                wr2.flush();
+                wr2.close();
+
+                int responseCodeBPJS = conBPJS.getResponseCode();
+
+
+                // ===============================
+                // Ambil respon BPJS
+                // ===============================
+                BufferedReader in;
+
+                if(responseCodeBPJS >= 400){
+                    in = new BufferedReader(new InputStreamReader(conBPJS.getErrorStream()));
+                }else{
+                    in = new BufferedReader(new InputStreamReader(conBPJS.getInputStream()));
+                }
+
+                StringBuilder responseBPJS = new StringBuilder();
+                String line;
+
+                while((line=in.readLine())!=null){
+                    responseBPJS.append(line);
+                }
+
+                in.close();
+
+
+                // ===============================
+                // DEBUG TERMINAL
+                // ===============================
+                System.out.println("====================================");
+                System.out.println("DEBUG BPJS RESPONSE (SKIP)");
+                System.out.println("No Rawat : " + noRawat);
+                System.out.println("URL      : " + urlBPJS.toString());
+                System.out.println("HTTP Code: " + responseCodeBPJS);
+                System.out.println("Response : ");
+                System.out.println(responseBPJS.toString());
+                System.out.println("====================================");
+
+
+                // ===============================
+                // Ambil pesan JSON
+                // ===============================
+                String pesanBPJS="Tidak ada pesan dari BPJS";
+
+                try{
+
+                    String raw=responseBPJS.toString();
+                    int jsonStart=raw.indexOf("{");
+
+                    if(jsonStart!=-1){
+
+                        String jsonOnly=raw.substring(jsonStart);
+
+                        org.json.JSONObject obj=new org.json.JSONObject(jsonOnly);
+                        org.json.JSONObject metadata=obj.getJSONObject("metadata");
+
+                        pesanBPJS=metadata.getString("message");
+                    }
+
+                }catch(Exception ex){
+
+                    pesanBPJS="Gagal membaca respon BPJS";
+                }
+
+
+                // ===============================
+                // Tampilkan ke user
+                // ===============================
+                StringBuilder message = new StringBuilder();
+
+                message.append("Informasi Antrian Skip\n\n");
+
+                message.append("No Rawat : ").append(noRawat).append("\n");
+                message.append("No Reg   : ").append(noReg).append("\n");
+                message.append("Pasien   : ").append(nmPasien).append("\n\n");
+
+                message.append("Status Pengiriman\n");
+
+                message.append("Display : ")
+                       .append(responseCodeLocal==200?"Berhasil":"Gagal")
+                       .append("\n");
+
+                message.append("BPJS    : ")
+                       .append(responseCodeBPJS==200?"Berhasil":"Gagal")
+                       .append("\n\n");
+
+                message.append("Pesan BPJS\n");
+                message.append(pesanBPJS);
+
+                JOptionPane.showMessageDialog(
+                    null,
+                    message.toString(),
+                    "Informasi Sistem",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+
             } catch (Exception e) {
+
                 e.printStackTrace();
+
                 JOptionPane.showMessageDialog(null,
-                    "Terjadi error : " + e.getMessage());
+                    "Terjadi error : "+e.getMessage());
             }
         }
+       
     private void BtnKeluarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnKeluarKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             dispose();
@@ -15869,6 +16336,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private javax.swing.JDialog DlgCatatan;
     private javax.swing.JButton BtnPanggil;
     private javax.swing.JButton BtnPanggilNext;
+    private javax.swing.JButton BtnPanggilSkip;
     private javax.swing.JDialog DlgSakit;
     private javax.swing.JDialog DlgSakit2;
     private widget.TextBox Jam;

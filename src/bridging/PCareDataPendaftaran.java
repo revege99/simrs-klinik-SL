@@ -445,7 +445,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
                 "Kode PPK","Nama PPK","Kode Spesialis","Nama Spesialis","Kode Sarana",
                 "Nama Sarana","Kode TACC","Nama TACC","Alasan TACC","Kode Alergi Makanan",
                 "Nama Alergi Makanan","Kode Alergi Udara","Nama Alergi Udara","Kode Alergi Obat","Nama Alergi Obat",
-                "Kode Prognosa","Nama Prognosa","Terapi Non Obat","BMHP","Suhu","Anamnesa"
+                "Kode Prognosa","Nama Prognosa","Terapi Non Obat","BMHP","Suhu","Anamnesa","Jadwal Faskes"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -556,6 +556,8 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
             }else if(i==48){
                 column.setPreferredWidth(150);
             }else if(i==49){
+                column.setPreferredWidth(150);
+            }else if(i==50){
                 column.setPreferredWidth(150);
             }
         }
@@ -1356,7 +1358,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
 
         tanggal.setEditable(false);
         tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-03-2026 09:12:36" }));
+        tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-03-2026 09:48:51" }));
         tanggal.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         tanggal.setName("tanggal"); // NOI18N
         tanggal.setOpaque(false);
@@ -1569,7 +1571,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jLabel22.setBounds(0, 102, 90, 23);
 
         TanggalDaftar.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalDaftar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-03-2026" }));
+        TanggalDaftar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-03-2026" }));
         TanggalDaftar.setDisplayFormat("dd-MM-yyyy");
         TanggalDaftar.setName("TanggalDaftar"); // NOI18N
         TanggalDaftar.setOpaque(false);
@@ -1886,7 +1888,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jLabel26.setBounds(30, 272, 97, 23);
 
         TanggalKunjungan.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalKunjungan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-03-2026" }));
+        TanggalKunjungan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-03-2026" }));
         TanggalKunjungan.setDisplayFormat("dd-MM-yyyy");
         TanggalKunjungan.setEnabled(false);
         TanggalKunjungan.setName("TanggalKunjungan"); // NOI18N
@@ -1991,7 +1993,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         BtnStatusPulang.setBounds(700, 392, 28, 23);
 
         TanggalPulang.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalPulang.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-03-2026" }));
+        TanggalPulang.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-03-2026" }));
         TanggalPulang.setDisplayFormat("dd-MM-yyyy");
         TanggalPulang.setEnabled(false);
         TanggalPulang.setName("TanggalPulang"); // NOI18N
@@ -2164,14 +2166,14 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         KdPoliInternal.setHighlighter(null);
         KdPoliInternal.setName("KdPoliInternal"); // NOI18N
         FormInput.add(KdPoliInternal);
-        KdPoliInternal.setBounds(130, 582, 50, 23);
+        KdPoliInternal.setBounds(870, 600, 50, 23);
 
         NmPoliInternal.setEditable(false);
         NmPoliInternal.setBackground(new java.awt.Color(245, 250, 240));
         NmPoliInternal.setHighlighter(null);
         NmPoliInternal.setName("NmPoliInternal"); // NOI18N
         FormInput.add(NmPoliInternal);
-        NmPoliInternal.setBounds(182, 582, 170, 23);
+        NmPoliInternal.setBounds(920, 600, 170, 23);
 
         BtnPoliInternal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         BtnPoliInternal.setMnemonic('X');
@@ -2184,7 +2186,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
             }
         });
         FormInput.add(BtnPoliInternal);
-        BtnPoliInternal.setBounds(354, 582, 28, 23);
+        BtnPoliInternal.setBounds(1090, 600, 28, 23);
 
         jLabel32.setText("Tgl.Est Rujukan :");
         jLabel32.setName("jLabel32"); // NOI18N
@@ -2193,7 +2195,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jLabel32.setBounds(90, 492, 95, 23);
 
         TanggalEstRujuk.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalEstRujuk.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-03-2026" }));
+        TanggalEstRujuk.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-03-2026" }));
         TanggalEstRujuk.setDisplayFormat("dd-MM-yyyy");
         TanggalEstRujuk.setEnabled(false);
         TanggalEstRujuk.setName("TanggalEstRujuk"); // NOI18N
@@ -2272,7 +2274,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
             }
         });
         FormInput.add(ChkInternal);
-        ChkInternal.setBounds(7, 582, 120, 23);
+        ChkInternal.setBounds(740, 600, 120, 23);
 
         ChkRujukLanjut.setText("Rujuk Lanjut :");
         ChkRujukLanjut.setEnabled(false);
@@ -2282,6 +2284,11 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         ChkRujukLanjut.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 ChkRujukLanjutItemStateChanged(evt);
+            }
+        });
+        ChkRujukLanjut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChkRujukLanjutActionPerformed(evt);
             }
         });
         FormInput.add(ChkRujukLanjut);
@@ -2397,31 +2404,31 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
             }
         });
         FormInput.add(BtnSubKhusus);
-        BtnSubKhusus.setBounds(700, 580, 28, 23);
+        BtnSubKhusus.setBounds(700, 530, 28, 23);
 
         NmSubKhusus.setEditable(false);
         NmSubKhusus.setBackground(new java.awt.Color(245, 250, 240));
         NmSubKhusus.setHighlighter(null);
         NmSubKhusus.setName("NmSubKhusus"); // NOI18N
         FormInput.add(NmSubKhusus);
-        NmSubKhusus.setBounds(530, 580, 170, 23);
+        NmSubKhusus.setBounds(530, 530, 170, 23);
 
         KdSubKhusus.setEditable(false);
         KdSubKhusus.setBackground(new java.awt.Color(245, 250, 240));
         KdSubKhusus.setHighlighter(null);
         KdSubKhusus.setName("KdSubKhusus"); // NOI18N
         FormInput.add(KdSubKhusus);
-        KdSubKhusus.setBounds(480, 580, 50, 23);
+        KdSubKhusus.setBounds(480, 530, 50, 23);
 
         LabelPoli11.setText("Subspesialis :");
         LabelPoli11.setName("LabelPoli11"); // NOI18N
         FormInput.add(LabelPoli11);
-        LabelPoli11.setBounds(380, 580, 94, 23);
+        LabelPoli11.setBounds(380, 530, 94, 23);
 
         jLabel33.setText("Jadwal Fakses :");
         jLabel33.setName("jLabel33"); // NOI18N
         FormInput.add(jLabel33);
-        jLabel33.setBounds(370, 520, 100, 23);
+        jLabel33.setBounds(20, 580, 110, 23);
 
         CatatanKhusus.setEnabled(false);
         CatatanKhusus.setHighlighter(null);
@@ -2771,7 +2778,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
             }
         });
         FormInput.add(jadwalFaskes);
-        jadwalFaskes.setBounds(390, 550, 310, 23);
+        jadwalFaskes.setBounds(130, 580, 580, 23);
 
         jLabel54.setText("Catatan :");
         jLabel54.setName("jLabel54"); // NOI18N
@@ -2821,7 +2828,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-03-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-03-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -2835,7 +2842,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-03-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-03-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -2925,7 +2932,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         panelGlass10.add(jLabel42);
 
         DTPCari3.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-03-2026" }));
+        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-03-2026" }));
         DTPCari3.setDisplayFormat("dd-MM-yyyy");
         DTPCari3.setName("DTPCari3"); // NOI18N
         DTPCari3.setOpaque(false);
@@ -2939,7 +2946,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         panelGlass10.add(jLabel43);
 
         DTPCari4.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-03-2026" }));
+        DTPCari4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-03-2026" }));
         DTPCari4.setDisplayFormat("dd-MM-yyyy");
         DTPCari4.setName("DTPCari4"); // NOI18N
         DTPCari4.setOpaque(false);
@@ -3029,7 +3036,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         panelGlass11.add(jLabel45);
 
         DTPCari5.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari5.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-03-2026" }));
+        DTPCari5.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-03-2026" }));
         DTPCari5.setDisplayFormat("dd-MM-yyyy");
         DTPCari5.setName("DTPCari5"); // NOI18N
         DTPCari5.setOpaque(false);
@@ -3043,7 +3050,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         panelGlass11.add(jLabel46);
 
         DTPCari6.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari6.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-03-2026" }));
+        DTPCari6.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-03-2026" }));
         DTPCari6.setDisplayFormat("dd-MM-yyyy");
         DTPCari6.setName("DTPCari6"); // NOI18N
         DTPCari6.setOpaque(false);
@@ -3141,7 +3148,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         panelGlass12.add(jLabel50);
 
         DTPCari7.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari7.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-03-2026" }));
+        DTPCari7.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-03-2026" }));
         DTPCari7.setDisplayFormat("dd-MM-yyyy");
         DTPCari7.setName("DTPCari7"); // NOI18N
         DTPCari7.setOpaque(false);
@@ -3155,7 +3162,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         panelGlass12.add(jLabel51);
 
         DTPCari8.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari8.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-03-2026" }));
+        DTPCari8.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-03-2026" }));
         DTPCari8.setDisplayFormat("dd-MM-yyyy");
         DTPCari8.setName("DTPCari8"); // NOI18N
         DTPCari8.setOpaque(false);
@@ -6347,11 +6354,11 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
             BtnSubKhusus.setEnabled(true);
             CatatanKhusus.setEnabled(true);
             chkSubspesialis.setSelected(false);
-            KdSubSpesialis.setText("");
-            NmSubSpesialis.setText("");
+//            KdSubSpesialis.setText("");
+//            NmSubSpesialis.setText("");
             BtnSubSpesialis.setEnabled(false);
-            KdSarana.setText("");
-            NmSarana.setText("");
+//            KdSarana.setText("");
+//            NmSarana.setText("");
             BtnSarana.setEnabled(false);
             ChkInternal.setSelected(false);
             KdPoliInternal.setText("");
@@ -6370,8 +6377,8 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
 //            KdKhusus.setText("");
 //            NmKhusus.setText("");
             KdSubKhusus.setText("");
-            KdPPKRujukan.setText("");
-            NmPPKRujukan.setText("");
+//            KdPPKRujukan.setText("");
+//            NmPPKRujukan.setText("");
             NmSubKhusus.setText("");
 //            CatatanKhusus.setText("");
         }
@@ -7049,10 +7056,10 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
             jadwalFaskes.setForeground(new java.awt.Color(0, 128, 0));  
             BtnSubSpesialis.setEnabled(false);
             BtnSarana.setEnabled(false);
-            KdSubSpesialis.setText("");
-            NmSubSpesialis.setText("");
-            KdSarana.setText("");
-            NmSarana.setText("");
+//            KdSubSpesialis.setText("");
+//            NmSubSpesialis.setText("");
+//            KdSarana.setText("");
+//            NmSarana.setText("");
         }
     }//GEN-LAST:event_chkSubspesialisItemStateChanged
 
@@ -7457,6 +7464,10 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         subspesialis.setLocationRelativeTo(internalFrame1);
         subspesialis.setVisible(true);
     }//GEN-LAST:event_BtnSubKhususActionPerformed
+
+    private void ChkRujukLanjutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkRujukLanjutActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ChkRujukLanjutActionPerformed
 
     /**
     * @param args the command line arguments
@@ -7866,7 +7877,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
                 "pcare_rujuk_subspesialis.nmTACC,pcare_rujuk_subspesialis.alasanTACC,pcare_rujuk_subspesialis.KdAlergiMakanan,pcare_rujuk_subspesialis.NmAlergiMakanan,"+
                 "pcare_rujuk_subspesialis.KdAlergiUdara,pcare_rujuk_subspesialis.NmAlergiUdara,pcare_rujuk_subspesialis.KdAlergiObat,"+
                 "pcare_rujuk_subspesialis.NmAlergiObat,pcare_rujuk_subspesialis.KdPrognosa,pcare_rujuk_subspesialis.NmPrognosa,"+
-                "pcare_rujuk_subspesialis.terapi_non_obat,pcare_rujuk_subspesialis.bmhp,pcare_rujuk_subspesialis.suhu,pcare_rujuk_subspesialis.anamnesa from pcare_rujuk_subspesialis where "+
+                "pcare_rujuk_subspesialis.terapi_non_obat,pcare_rujuk_subspesialis.bmhp,pcare_rujuk_subspesialis.suhu,pcare_rujuk_subspesialis.anamnesa,pcare_rujuk_subspesialis.jadwalFaskes from pcare_rujuk_subspesialis where "+
                 "pcare_rujuk_subspesialis.tglDaftar between ? and ? and "+
                 "(pcare_rujuk_subspesialis.no_rawat like ? or pcare_rujuk_subspesialis.noKunjungan like ? or "+
                 "pcare_rujuk_subspesialis.no_rkm_medis like ? or pcare_rujuk_subspesialis.nm_pasien like ? or "+
@@ -7905,7 +7916,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
                         rs.getString("alasanTACC"),rs.getString("KdAlergiMakanan"),rs.getString("NmAlergiMakanan"),
                         rs.getString("KdAlergiUdara"),rs.getString("NmAlergiUdara"),rs.getString("KdAlergiObat"),
                         rs.getString("NmAlergiObat"),rs.getString("KdPrognosa"),rs.getString("NmPrognosa"),
-                        rs.getString("terapi_non_obat"),rs.getString("bmhp"),rs.getString("suhu"),rs.getString("anamnesa")
+                        rs.getString("terapi_non_obat"),rs.getString("bmhp"),rs.getString("suhu"),rs.getString("anamnesa"),rs.getString("jadwalFaskes")
                     });
                 }
             } catch (Exception e) {
@@ -8287,7 +8298,8 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
                         TinggiBadan.setText(rs.getString("tinggi"));
                         LingkarPerut.setText(rs.getString("lingkar_perut"));
                         BeratBadan.setText(rs.getString("berat"));
-                        Keluhan.setText(rs.getString("keluhan")+(rs.getString("pemeriksaan").equals("")?"":", "+rs.getString("pemeriksaan")));
+                        Keluhan.setText(rs.getString("keluhan"));
+                        anamnesa.setText(rs.getString("pemeriksaan"));
                         NmSadar.setText(rs.getString("kesadaran"));
                         TSuhu.setText(rs.getString("suhu_tubuh"));
                         TerapiObat.setText(rs.getString("rtl"));
@@ -8479,6 +8491,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
                         BeratBadan.setText(rs.getString("berat"));
                         LingkarPerut.setText("40");
                         Keluhan.setText(rs.getString("keluhan")+(rs.getString("pemeriksaan").equals("")?"":", "+rs.getString("pemeriksaan")));
+                        anamnesa.setText(rs.getString("keluhan")+(rs.getString("pemeriksaan").equals("")?"":", "+rs.getString("pemeriksaan")));
                         NmSadar.setText(rs.getString("kesadaran"));
                         TSuhu.setText(rs.getString("suhu_tubuh"));
                         TerapiNonObat.setText(rs.getString("instruksi").equals("")?"Tidak Ada":rs.getString("instruksi"));
@@ -9262,6 +9275,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
             BMHP.setText(tbSpesialis.getValueAt(tbSpesialis.getSelectedRow(),49).toString());
             TSuhu.setText(tbSpesialis.getValueAt(tbSpesialis.getSelectedRow(),50).toString());
             anamnesa.setText(tbSpesialis.getValueAt(tbSpesialis.getSelectedRow(),51).toString());
+            jadwalFaskes.setText(tbSpesialis.getValueAt(tbSpesialis.getSelectedRow(),52).toString());
             Valid.SetTgl(TanggalPulang,tbSpesialis.getValueAt(tbSpesialis.getSelectedRow(),21).toString());
             Valid.SetTgl(TanggalEstRujuk,tbSpesialis.getValueAt(tbSpesialis.getSelectedRow(),30).toString());
             TglLahir.setText(Sequel.cariIsi("select pasien.tgl_lahir from pasien where pasien.no_rkm_medis=?",TNoRM.getText()));

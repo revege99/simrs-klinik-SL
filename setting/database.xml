@@ -2,16 +2,16 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <comment>KhanzaHMS</comment> 
-     <entry key="HOST">5k7+C7EnUw9nUv2Nix+DBA==</entry>
-    <entry key="DATABASE">MIA/lNMX1pDjUR+9z+KoG35KYT3YLGbZu+X5jPRiLSI=</entry>
+     <entry key="HOST">5kIwSX90fJ9iEsCIxsEICg==</entry>
+    <entry key="DATABASE">AZHNccBwSmSho84f+X8GyQ==</entry>
     <entry key="PORT">nioxtijcpDaKSUiUiP5FAg==</entry>
     <entry key="USER">kMR3WfAwUK6MbhCyydxa0g==</entry>
     <entry key="PAS">wGkeCo8HqLW7hLShpQpkeQ==</entry>
     <entry key="CARICEPAT">aktif</entry>
-    <entry key="HOSTHYBRIDWEB">R3ZJ0JQPfyjx+QrVT6uB3w==</entry>
+    <entry key="HOSTHYBRIDWEB">5kIwSX90fJ9iEsCIxsEICg==</entry>
     <entry key="USERHYBRIDWEB">nmXqCKzrz9i8GTZlq7JruQ==</entry>
     <entry key="PASHYBRIDWEB">AsJ/0/gCnYnD+gK4fw9uKA==</entry>
-    <entry key="HOSTCALL">R3ZJ0JQPfyjx+QrVT6uB3w==</entry>
+    <entry key="HOSTCALL">5kIwSX90fJ9iEsCIxsEICg==</entry>
     <entry key="PORTCALL">80</entry>
     <entry key="FOLDERCALL">localhost</entry>
     <entry key="HYBRIDWEB">webapps</entry>

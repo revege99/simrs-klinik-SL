@@ -9514,7 +9514,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
                                 requestEntity = new HttpEntity(requestJson, headers2);
 
                                 ResponseEntity<String> response = api.getRest().exchange(
-                                        koneksiDB.URLAPIPCARE()+"/kunjungan",
+                                        koneksiDB.URLAPIPCARE()+"/kunjungan/V1",
                                         HttpMethod.POST,
                                         requestEntity,
                                         String.class
@@ -9888,7 +9888,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
                                         try {
                                         requestEntity = new HttpEntity(requestJson, headers2);
                                         ResponseEntity<String> response = api.getRest().exchange(
-                                                koneksiDB.URLAPIPCARE()+"/kunjungan",
+                                                koneksiDB.URLAPIPCARE()+"/kunjungan/V1",
                                                 HttpMethod.POST,
                                                 requestEntity,
                                                 String.class
@@ -11116,7 +11116,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
 
         String response = restTemplate.exchange(
-            koneksiDB.URLAPIPCARE() + "/kunjungan",
+            koneksiDB.URLAPIPCARE() + "/kunjungan/V1",
             HttpMethod.PUT,
             entity,
             String.class
@@ -11288,7 +11288,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
 
         String response = restTemplate.exchange(
-            koneksiDB.URLAPIPCARE() + "/kunjungan/",
+            koneksiDB.URLAPIPCARE() + "/kunjungan/V1",
             HttpMethod.PUT,
             entity,
             String.class

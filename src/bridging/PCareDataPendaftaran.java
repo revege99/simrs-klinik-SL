@@ -6721,6 +6721,13 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
                         NmDiagnosa1.setText(penyakit.getTable().getValueAt(penyakit.getTable().getSelectedRow(),2).toString());
                         StatusDiagnosa1.setText(penyakit.getTable().getValueAt(penyakit.getTable().getSelectedRow(),3).toString());
                         KdDiagnosa1.requestFocus();
+                        
+                        
+                        System.out.println("--- DEBUG DIAGNOSA 1 ---");
+                        System.out.println("Kode     : " + KdDiagnosa1.getText());
+                        System.out.println("Nama     : " + NmDiagnosa1.getText());
+                        System.out.println("Status   : " + StatusDiagnosa1.getText()); // Ini yang menentukan TACC
+                        System.out.println("------------------------");
                     }else if(pilihan==2){
                         KdDiagnosa2.setText(penyakit.getTable().getValueAt(penyakit.getTable().getSelectedRow(),1).toString());
                         NmDiagnosa2.setText(penyakit.getTable().getValueAt(penyakit.getTable().getSelectedRow(),2).toString());
@@ -6841,6 +6848,12 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
                         NmDiagnosa1.setText(penyakit.getTable().getValueAt(penyakit.getTable().getSelectedRow(),2).toString());
                         StatusDiagnosa1.setText(penyakit.getTable().getValueAt(penyakit.getTable().getSelectedRow(),3).toString());
                         KdDiagnosa1.requestFocus();
+                        
+                        System.out.println("--- DEBUG DIAGNOSA 1 ---");
+                        System.out.println("Kode     : " + KdDiagnosa1.getText());
+                        System.out.println("Nama     : " + NmDiagnosa1.getText());
+                        System.out.println("Status   : " + StatusDiagnosa1.getText()); // Ini yang menentukan TACC
+                        System.out.println("------------------------");
                     }else if(pilihan==2){
                         KdDiagnosa2.setText(penyakit.getTable().getValueAt(penyakit.getTable().getSelectedRow(),1).toString());
                         NmDiagnosa2.setText(penyakit.getTable().getValueAt(penyakit.getTable().getSelectedRow(),2).toString());
@@ -9501,7 +9514,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
                     System.out.println("user_key: " + headers2.getFirst("user_key"));
 
                         
-                        System.out.println("\n=== REQUEST JSON Kunjungan Only  ===\n" 
+                    System.out.println("\n=== REQUEST JSON Kunjungan Only  ===\n" 
                    + requestJson 
                    + "\n=== REQUEST JSON END ===\n");
 
@@ -9586,26 +9599,55 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
                                 JOptionPane.showMessageDialog(null,nameNode.path("message").asText());
                             }
                         }
-                    }else if(ChkRujukLanjut.isSelected()==true){
-                        tacccek=0;
-                        if(StatusDiagnosa1.getText().equals("true")){
-                            tacccek++;
-                        }
-                        if(StatusDiagnosa2.getText().equals("true")){
-                            tacccek++;
-                        }
-                        if(StatusDiagnosa3.getText().equals("true")){
-                            tacccek++;
-                        }
-                        if(tacccek>0){
-                            if(KdTACC.getText().trim().equals("")){
-                                JOptionPane.showMessageDialog(null,"Diagnosa non spesialistik harus ada alasan TACC");
-                            }else if(!KdTACC.getText().trim().equals("")){
-                                if(!KdTACC.getText().equals("-1")){
-                                    kdtacc=KdTACC.getText();
-                                    NmTACC.getText();
-                                    alasantacc="\""+AlasanTACC.getText()+"\"";
-                                }
+                    }
+//                        else if(ChkRujukLanjut.isSelected()==true){
+//                        tacccek=0;
+//                        if(StatusDiagnosa1.getText().equals("true")){
+//                            tacccek++;
+//                        }
+//                        if(StatusDiagnosa2.getText().equals("true")){
+//                            tacccek++;
+//                        }
+//                        if(StatusDiagnosa3.getText().equals("true")){
+//                            tacccek++;
+//                        }
+//                        if(tacccek>0){
+//                            if(KdTACC.getText().trim().equals("")){
+//                                JOptionPane.showMessageDialog(null,"Diagnosa non spesialistik harus ada alasan TACC");
+//                            }else if(!KdTACC.getText().trim().equals("")){
+//                                if(!KdTACC.getText().equals("-1")){
+//                                    kdtacc=KdTACC.getText();
+//                                    NmTACC.getText();
+//                                    alasantacc="\""+AlasanTACC.getText()+"\"";
+//                                }
+
+                                else if(ChkRujukLanjut.isSelected()==true){
+
+                                    tacccek = Sequel.cariInteger(
+                                        "select count(*) from diagnosa_pasien " +
+                                        "where no_rawat='" + TNoRw.getText() + "' " +
+                                        "and status='Ralan' " +
+                                        "and nonSpesialis='true'"
+                                    );
+
+                                    System.out.println("===== CEK TACC NON SPESIALIS =====");
+                                    System.out.println("No Rawat : " + TNoRw.getText());
+                                    System.out.println("Jumlah diagnosa nonSpesialis true : " + tacccek);
+                                    System.out.println("==================================");
+
+                                    if(tacccek > 0){
+
+                                        if(KdTACC.getText().trim().equals("")){
+                                            JOptionPane.showMessageDialog(null,"Diagnosa non spesialistik harus ada alasan TACC");
+
+                                        }else if(!KdTACC.getText().trim().equals("")){
+
+                                            if(!KdTACC.getText().equals("-1")){
+                                                kdtacc = KdTACC.getText();
+                                                NmTACC.getText();
+                                                alasantacc = "\"" + AlasanTACC.getText() + "\"";
+                                            }
+
                                 if(ChkInternal.isSelected()==true){
                                     if(NmPoliInternal.getText().equals("")){
                                         Valid.textKosong(BtnPoliInternal,"Poli Internal");
@@ -10154,10 +10196,11 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
                                                     "\"bmhp\": \""+(BMHP.getText().equals("")?"Tidak Ada":BMHP.getText())+"\"," +
                                                     "\"suhu\": \""+TSuhu.getText()+"\"" +
                                                   "}";
-                                    // okeoke
-                                    System.out.println("\n=== REQUEST JSON KETIKA KD TACCH = 0 ===\n" 
+                                        // okeoke
+                                        System.out.println("\n=== REQUEST JSON KETIKA KD TACCH = 0 ===\n" 
                                         + requestJson 
                                         + "\n=== REQUEST JSON END ===\n");
+                                        System.out.println("Nilai kdtacc: " + kdtacc);
 
 //                                        requestEntity = new HttpEntity(requestJson,headers2);
 //                                        requestJson=api.getRest().exchange(koneksiDB.URLAPIPCARE()+"/kunjungan/V1", HttpMethod.POST, requestEntity, String.class).getBody();

@@ -2,11 +2,11 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <comment>KhanzaHMS</comment> 
-     <entry key="HOST">5k7+C7EnUw9nUv2Nix+DBA==</entry>
+    <entry key="HOST">5k7+C7EnUw9nUv2Nix+DBA==</entry>
     <entry key="DATABASE">MIA/lNMX1pDjUR+9z+KoG35KYT3YLGbZu+X5jPRiLSI=</entry>
     <entry key="PORT">nioxtijcpDaKSUiUiP5FAg==</entry>
     <entry key="USER">kMR3WfAwUK6MbhCyydxa0g==</entry>
-    <entry key="PAS">wGkeCo8HqLW7hLShpQpkeQ==</entry>
+    <entry key="PAS">l4nh5eVYrLAER/I2A4b3Tw==</entry>
     <entry key="CARICEPAT">aktif</entry>
     <entry key="HOSTHYBRIDWEB">R3ZJ0JQPfyjx+QrVT6uB3w==</entry>
     <entry key="USERHYBRIDWEB">nmXqCKzrz9i8GTZlq7JruQ==</entry>
@@ -74,12 +74,12 @@
     <entry key="CONSIDAPISMARTCLAIM">l4nh5eVYrLAER/I2A4b3Tw==</entry>
     <entry key="USERKEYAPISMARTCLAIM">l4nh5eVYrLAER/I2A4b3Tw==</entry>
     
-    <entry key="URLAPIPCARE">https://apijkn-dev.bpjs-kesehatan.go.id/pcare-rest-dev</entry>
-    <entry key="SECRETKEYAPIPCARE">wHEDMrJzvnpapY6t26Sm6Q==</entry>
-    <entry key="CONSIDAPIPCARE">5QDYa/t3yqxtz4Ug4Y/nUQ==</entry>
-    <entry key="USERKEYAPIPCARE">B7xTNK8KIL95gT6EBCGF8TtEZ5TwbbYp5h2SSPq+3GlvSoU5oW0LawJMTcs10/x9</entry>
-    <entry key="PASSPCARE">hFvV+Zm8gInk2cgSvsekxw==</entry>
-    <entry key="USERPCARE">q2xL8JQSotklG7OoOZYnQw==</entry>
+    <entry key="URLAPIPCARE">https://apijkn.bpjs-kesehatan.go.id/pcare-rest</entry>
+    <entry key="SECRETKEYAPIPCARE">3zGSmEcE3V2+sr7yr+cWOg==</entry>
+    <entry key="CONSIDAPIPCARE">QAeZAgxEmVV50rEEx8J9sg==</entry>
+    <entry key="USERKEYAPIPCARE">kFZpFhuVlWpg42V3bmL7SGIirxR+Vloeut60LkZpPLgbIv9UlSZeXYkJBHV8E4Nz</entry>
+    <entry key="PASSPCARE">/e+YEY+Yan+2IC9nPKokBJLWqPqACzAaZGsAEZmDiuI=</entry>
+    <entry key="USERPCARE">XkXwv3pTn3/QsybIP8RWfQ==</entry>
 
     <entry key="URLMOBILEJKNFKTP">https://apijkn-dev.bpjs-kesehatan.go.id/antreanfktp_dev</entry>
     <entry key="SECRETKEYMOBILEJKNFKTP">wHEDMrJzvnpapY6t26Sm6Q==</entry>

@@ -196,6 +196,16 @@ import rekammedis.RMTransferPasienAntarRuang;
 import rekammedis.RMTriaseIGD;
 import rekammedis.RMUjiFungsiKFR;
 
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author dosen
@@ -1634,7 +1644,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         setUndecorated(true);
         setResizable(false);
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Perawatan/Tindakan Rawat Jalan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); 
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Perawatan/Tindakan Rawat Jalan Modif ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); 
         internalFrame1.setName("internalFrame1"); 
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -5258,6 +5268,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
             }
         }
 }//GEN-LAST:event_BtnSimpanKeyPressed
+    
 
     private void BtnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBatalActionPerformed
         ChkInput.setSelected(true);
@@ -13490,6 +13501,54 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         FormMenu.add(BtnPenilaianTambahanMelarikanDiri);
         FormMenu.add(BtnPenilaianDerajatDehidrasi);
     }
+    
+    private void kirimTACCNonSpesialis(String noRawat) {
+    try {
+        URL urlTACC = new URL("http://" + koneksiDB.HOSTCALL() + "/webkhanza/?page=function_tacc");
+
+        HttpURLConnection conn = (HttpURLConnection) urlTACC.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        conn.setDoOutput(true);
+
+        String dataPost = "no_rawat=" + URLEncoder.encode(noRawat, "UTF-8");
+
+        DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+        wr.writeBytes(dataPost);
+        wr.flush();
+        wr.close();
+
+        int responseCode = conn.getResponseCode();
+
+        BufferedReader br = new BufferedReader(
+            new InputStreamReader(
+                responseCode >= 200 && responseCode < 300
+                    ? conn.getInputStream()
+                    : conn.getErrorStream()
+            )
+        );
+
+        String line;
+        StringBuilder response = new StringBuilder();
+
+        while ((line = br.readLine()) != null) {
+            response.append(line);
+        }
+
+        br.close();
+
+        System.out.println("===== RESPONSE FUNCTION TACC =====");
+        System.out.println("URL          : " + urlTACC);
+        System.out.println("No Rawat     : " + noRawat);
+        System.out.println("ResponseCode : " + responseCode);
+        System.out.println("Response     : " + response.toString());
+        System.out.println("==================================");
+
+    } catch (Exception e) {
+        System.out.println("Gagal kirim ke function_tacc");
+        e.printStackTrace();
+    }
+}
 
     private void simpan() {
         switch (TabRawat.getSelectedIndex()) {
@@ -13681,10 +13740,28 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     }
                 }
                 break;
-            case 6:
+//            case 6:
+//                if(akses.getdiagnosa_pasien()==true){
+//                    panelDiagnosa1.setRM(TNoRw.getText(),TNoRM.getText(),Valid.SetTgl(DTPCari1.getSelectedItem()+""),Valid.SetTgl(DTPCari2.getSelectedItem()+""),"Ralan",TCari.getText().trim());
+//                    panelDiagnosa1.simpan();
+//                }
+//                break;
+                
+               case 6:
                 if(akses.getdiagnosa_pasien()==true){
-                    panelDiagnosa1.setRM(TNoRw.getText(),TNoRM.getText(),Valid.SetTgl(DTPCari1.getSelectedItem()+""),Valid.SetTgl(DTPCari2.getSelectedItem()+""),"Ralan",TCari.getText().trim());
+                    panelDiagnosa1.setRM(
+                        TNoRw.getText(),
+                        TNoRM.getText(),
+                        Valid.SetTgl(DTPCari1.getSelectedItem()+""),
+                        Valid.SetTgl(DTPCari2.getSelectedItem()+""),
+                        "Ralan",
+                        TCari.getText().trim()
+                    );
+
                     panelDiagnosa1.simpan();
+
+                    // Kirim no_rawat ke PHP function_tacc
+                    kirimTACCNonSpesialis(TNoRw.getText());
                 }
                 break;
             case 7:

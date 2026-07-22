@@ -2683,15 +2683,21 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                         Sequel.queryu("INSERT INTO antripoli VALUES('" + kdDokter + "','" + kdPoli + "','1','" + noRawat + "','" + noReg + "','" + tanggal + "')");
 
                         // =======================
-                        URL obj = new URL("http://" + koneksiDB.HOSTCALL() + "/" + koneksiDB.FOLDERCALL() + "/simpan.php");
+                        URL obj = new URL("http://" + koneksiDB.HOSTCALL() + ":8000/api/integration/display/panggil");
 
                         HttpURLConnection conLocal = (HttpURLConnection) obj.openConnection();
                         conLocal.setRequestMethod("POST");
                         conLocal.setDoOutput(true);
                         conLocal.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                        conLocal.setRequestProperty("Accept", "application/json");
+                        conLocal.setRequestProperty("X-Integration-Token", "13178ee2acc7f4de7f2837179f9e807f8c71accc68b505dad4305567da32ae60");
+                        conLocal.setConnectTimeout(10000);
+                        conLocal.setReadTimeout(30000);
 
                         String localParams =
-                            "nama=" + URLEncoder.encode(namaPasien, "UTF-8") +
+                            "no_rawat=" + URLEncoder.encode(noRawat, "UTF-8") +
+                            "&sumber=panggil" +
+                            "&nama=" + URLEncoder.encode(namaPasien, "UTF-8") +
                             "&nomor=" + URLEncoder.encode(nomorAntrian, "UTF-8") +
                             "&dokter=" + URLEncoder.encode(namaDokter, "UTF-8") +
                             "&spesialis=" + URLEncoder.encode(spesialisDokter, "UTF-8");
@@ -2705,11 +2711,15 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                         System.out.println("Local Response Code: " + responseCodeLocal);
 
 
-                        URL urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() + "/webkhanza/?page=function_panggil_antrean");
+                        URL urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() + ":8000/api/integration/antrean-fktp/panggil");
                         HttpURLConnection conBPJS = (HttpURLConnection) urlBPJS.openConnection();
                         conBPJS.setRequestMethod("POST");
                         conBPJS.setDoOutput(true);
                         conBPJS.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                        conBPJS.setRequestProperty("Accept", "application/json");
+                        conBPJS.setRequestProperty("X-Integration-Token", "13178ee2acc7f4de7f2837179f9e807f8c71accc68b505dad4305567da32ae60");
+                        conBPJS.setConnectTimeout(10000);
+                        conBPJS.setReadTimeout(60000);
 
                         String bpjsParams = "no_rawat=" + URLEncoder.encode(noRawat, "UTF-8");
 
@@ -2721,12 +2731,23 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
 
                         int responseCodeBPJS = conBPJS.getResponseCode();
                         StringBuilder responseBPJS = new StringBuilder();
-                        try (BufferedReader in = new BufferedReader(new InputStreamReader(conBPJS.getInputStream()))) {
+                        try (BufferedReader in = new BufferedReader(new InputStreamReader(
+                                responseCodeBPJS >= 400 ? conBPJS.getErrorStream() : conBPJS.getInputStream()))) {
                             String inputLine;
                             while ((inputLine = in.readLine()) != null) {
-                                responseBPJS.append(inputLine);
+                                responseBPJS.append(inputLine).append(System.lineSeparator());
                             }
                         }
+
+                        System.out.println("====================================");
+                        System.out.println("DEBUG BPJS RESPONSE panggil hadir");
+                        System.out.println("No Rawat : " + noRawat);
+                        System.out.println("URL      : " + urlBPJS.toString());
+                        System.out.println("HTTP Code: " + responseCodeBPJS);
+                        printBpjsRequestDebug(conBPJS);
+                        System.out.println("Response : ");
+                        System.out.println(responseBPJS.toString());
+                        System.out.println("====================================");
 
                         // =======================
                         // ✅ Hasil ke User
@@ -2781,12 +2802,16 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
 //
 //                    String urlParameters = "no_rawat=" + URLEncoder.encode(noRawat, "UTF-8");
 
-                        URL url = new URL("http://" + koneksiDB.HOSTCALL() + "/webkhanza/?page=function_pasien_tidakhadir");
+                        URL url = new URL("http://" + koneksiDB.HOSTCALL() + ":8000/api/integration/antrean-fktp/tidak-hadir");
                         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
                         con.setRequestMethod("POST");
                         con.setDoOutput(true);
                         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                        con.setRequestProperty("Accept", "application/json");
+                        con.setRequestProperty("X-Integration-Token", "13178ee2acc7f4de7f2837179f9e807f8c71accc68b505dad4305567da32ae60");
+                        con.setConnectTimeout(10000);
+                        con.setReadTimeout(60000);
 
                         String urlParameters = "no_rawat=" + URLEncoder.encode(noRawat, "UTF-8");
 
@@ -2799,15 +2824,23 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                     int responseCode = con.getResponseCode();
 
                     StringBuilder response = new StringBuilder();
-                    try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(
+                            responseCode >= 400 ? con.getErrorStream() : con.getInputStream()))) {
                         String inputLine;
                         while ((inputLine = in.readLine()) != null) {
-                            response.append(inputLine);
+                            response.append(inputLine).append(System.lineSeparator());
                         }
                     }
 
-                    System.out.println("Response Code: " + responseCode);
-                    System.out.println("Response Body: " + response.toString());
+                    System.out.println("====================================");
+                    System.out.println("DEBUG BPJS RESPONSE panggil tidak hadir");
+                    System.out.println("No Rawat : " + noRawat);
+                    System.out.println("URL      : " + url.toString());
+                    System.out.println("HTTP Code: " + responseCode);
+                    printBpjsRequestDebug(con);
+                    System.out.println("Response : ");
+                    System.out.println(response.toString());
+                    System.out.println("====================================");
 
                     if (responseCode == 200) {
                         JOptionPane.showMessageDialog(null, 
@@ -7151,17 +7184,23 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                     // =====================================================
                     // KIRIM DISPLAY (LANGSUNG)
                     // =====================================================
-                    URL urlLocal = new URL("http://" + koneksiDB.HOSTCALL() + "/" +
-                                           koneksiDB.FOLDERCALL() + "/simpan.php");
+                    URL urlLocal = new URL("http://" + koneksiDB.HOSTCALL() +
+                                           ":8000/api/integration/display/panggil");
 
                     HttpURLConnection conLocal = (HttpURLConnection) urlLocal.openConnection();
 
                     conLocal.setRequestMethod("POST");
                     conLocal.setDoOutput(true);
                     conLocal.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    conLocal.setRequestProperty("Accept", "application/json");
+                    conLocal.setRequestProperty("X-Integration-Token", "13178ee2acc7f4de7f2837179f9e807f8c71accc68b505dad4305567da32ae60");
+                    conLocal.setConnectTimeout(10000);
+                    conLocal.setReadTimeout(30000);
 
                     String localParams =
-                        "nama=" + URLEncoder.encode(nmPasien, "UTF-8") +
+                        "no_rawat=" + URLEncoder.encode(noRawat, "UTF-8") +
+                        "&sumber=panggil" +
+                        "&nama=" + URLEncoder.encode(nmPasien, "UTF-8") +
                         "&nomor=" + URLEncoder.encode(noAntrian, "UTF-8") +
                         "&dokter=" + URLEncoder.encode(namaDokter, "UTF-8") +
                         "&spesialis=" + URLEncoder.encode(namaPoli, "UTF-8");
@@ -7226,12 +7265,12 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                     if(pilihan==1){
 
                         urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
-                                "/webkhanza/?page=function_pasien_tidakhadir");
+                                ":8000/api/integration/antrean-fktp/tidak-hadir");
 
                     }else{
 
                         urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
-                                "/webkhanza/?page=function_panggil_antrean");
+                                ":8000/api/integration/antrean-fktp/panggil");
 
                     }
 
@@ -7240,6 +7279,12 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                     conBPJS.setRequestMethod("POST");
                     conBPJS.setDoOutput(true);
                     conBPJS.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    conBPJS.setRequestProperty("Accept", "application/json");
+                    conBPJS.setConnectTimeout(10000);
+                    conBPJS.setReadTimeout(60000);
+
+                    conBPJS.setRequestProperty("X-Integration-Token",
+                        "13178ee2acc7f4de7f2837179f9e807f8c71accc68b505dad4305567da32ae60");
 
                     String bpjsParams = "no_rawat=" + URLEncoder.encode(noRawat, "UTF-8");
 
@@ -7266,18 +7311,21 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                     String line;
 
                     while((line=in.readLine())!=null){
-                        responseBPJS.append(line);
+                        responseBPJS.append(line).append(System.lineSeparator());
                     }
 
                     in.close();
                     // =====================================================
-                    // DEBUG BPJS RESPONSE (TERMINAL)
+                    // DEBUG BPJS RESPONSE panggil hadir (TERMINAL)
                     // =====================================================
                     System.out.println("====================================");
-                    System.out.println("DEBUG BPJS RESPONSE");
+                    System.out.println(pilihan==1
+                        ? "DEBUG BPJS RESPONSE panggil tidak hadir"
+                        : "DEBUG BPJS RESPONSE panggil hadir");
                     System.out.println("No Rawat : " + noRawat);
                     System.out.println("URL      : " + urlBPJS.toString());
                     System.out.println("HTTP Code: " + responseCodeBPJS);
+                    printBpjsRequestDebug(conBPJS);
                     System.out.println("Response : ");
                     System.out.println(responseBPJS.toString());
                     System.out.println("====================================");
@@ -7476,16 +7524,22 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             // ===============================
             // 6️⃣ Kirim ke Display (LANGSUNG)
             // ===============================
-            URL urlLocal = new URL("http://" + koneksiDB.HOSTCALL() + "/" +
-                                   koneksiDB.FOLDERCALL() + "/simpan.php");
+            URL urlLocal = new URL("http://" + koneksiDB.HOSTCALL() +
+                                   ":8000/api/integration/display/panggil");
 
             HttpURLConnection conLocal = (HttpURLConnection) urlLocal.openConnection();
             conLocal.setRequestMethod("POST");
             conLocal.setDoOutput(true);
             conLocal.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+            conLocal.setRequestProperty("Accept","application/json");
+            conLocal.setRequestProperty("X-Integration-Token", "13178ee2acc7f4de7f2837179f9e807f8c71accc68b505dad4305567da32ae60");
+            conLocal.setConnectTimeout(10000);
+            conLocal.setReadTimeout(30000);
 
             String localParams =
-                "nama="+URLEncoder.encode(nmPasien,"UTF-8")+
+                "no_rawat="+URLEncoder.encode(newNoRawat,"UTF-8")+
+                "&sumber=panggil_next"+
+                "&nama="+URLEncoder.encode(nmPasien,"UTF-8")+
                 "&nomor="+URLEncoder.encode(newNoReg,"UTF-8")+
                 "&dokter="+URLEncoder.encode(namaDokter,"UTF-8")+
                 "&spesialis="+URLEncoder.encode(namaPoli,"UTF-8");
@@ -7546,10 +7600,10 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
 
             if(pilihan==1){
                 urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
-                                  "/webkhanza/?page=function_pasien_tidakhadir");
+                                  ":8000/api/integration/antrean-fktp/tidak-hadir");
             }else{
                 urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
-                                  "/webkhanza/?page=function_panggil_antrean");
+                                  ":8000/api/integration/antrean-fktp/panggil");
             }
 
             HttpURLConnection conBPJS = (HttpURLConnection) urlBPJS.openConnection();
@@ -7557,6 +7611,12 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             conBPJS.setRequestMethod("POST");
             conBPJS.setDoOutput(true);
             conBPJS.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+            conBPJS.setRequestProperty("Accept","application/json");
+            conBPJS.setConnectTimeout(10000);
+            conBPJS.setReadTimeout(60000);
+
+            conBPJS.setRequestProperty("X-Integration-Token",
+                "13178ee2acc7f4de7f2837179f9e807f8c71accc68b505dad4305567da32ae60");
 
             String bpjsParams="no_rawat="+URLEncoder.encode(newNoRawat,"UTF-8");
 
@@ -7583,7 +7643,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             String line;
 
             while((line=in.readLine())!=null){
-                responseBPJS.append(line);
+                responseBPJS.append(line).append(System.lineSeparator());
             }
 
             in.close();
@@ -7593,10 +7653,13 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             // 🔧 DEBUG TERMINAL
             // ===============================
             System.out.println("====================================");
-            System.out.println("DEBUG BPJS RESPONSE");
+            System.out.println(pilihan==1
+                ? "DEBUG BPJS RESPONSE panggil next tidak hadir"
+                : "DEBUG BPJS RESPONSE panggil next hadir");
             System.out.println("No Rawat : " + newNoRawat);
             System.out.println("URL      : " + urlBPJS.toString());
             System.out.println("HTTP Code: " + responseCodeBPJS);
+            printBpjsRequestDebug(conBPJS);
             System.out.println("Response : ");
             System.out.println(responseBPJS.toString());
             System.out.println("====================================");
@@ -7729,17 +7792,23 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                 // ===============================
                 // 3️⃣ Kirim ke Display
                 // ===============================
-                URL urlLocal = new URL("http://" + koneksiDB.HOSTCALL() + "/" +
-                                       koneksiDB.FOLDERCALL() + "/simpan.php");
+                URL urlLocal = new URL("http://" + koneksiDB.HOSTCALL() +
+                                       ":8000/api/integration/display/panggil");
 
                 HttpURLConnection conLocal = (HttpURLConnection) urlLocal.openConnection();
 
                 conLocal.setRequestMethod("POST");
                 conLocal.setDoOutput(true);
                 conLocal.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+                conLocal.setRequestProperty("Accept","application/json");
+                conLocal.setRequestProperty("X-Integration-Token", "13178ee2acc7f4de7f2837179f9e807f8c71accc68b505dad4305567da32ae60");
+                conLocal.setConnectTimeout(10000);
+                conLocal.setReadTimeout(30000);
 
                 String localParams =
-                    "nama="+URLEncoder.encode(nmPasien,"UTF-8")+
+                    "no_rawat="+URLEncoder.encode(noRawat,"UTF-8")+
+                    "&sumber=panggil_skip"+
+                    "&nama="+URLEncoder.encode(nmPasien,"UTF-8")+
                     "&nomor="+URLEncoder.encode(noReg,"UTF-8")+
                     "&dokter="+URLEncoder.encode(namaDokter,"UTF-8")+
                     "&spesialis="+URLEncoder.encode(namaPoli,"UTF-8");
@@ -7814,12 +7883,12 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                 if(pilihan==1){
 
                     urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
-                                      "/webkhanza/?page=function_pasien_tidakhadir");
+                                      ":8000/api/integration/antrean-fktp/tidak-hadir");
 
                 }else{
 
                     urlBPJS = new URL("http://" + koneksiDB.HOSTCALL() +
-                                      "/webkhanza/?page=function_panggil_antrean");
+                                      ":8000/api/integration/antrean-fktp/panggil");
                 }
 
                 HttpURLConnection conBPJS = (HttpURLConnection) urlBPJS.openConnection();
@@ -7827,6 +7896,12 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                 conBPJS.setRequestMethod("POST");
                 conBPJS.setDoOutput(true);
                 conBPJS.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+                conBPJS.setRequestProperty("Accept","application/json");
+                conBPJS.setConnectTimeout(10000);
+                conBPJS.setReadTimeout(60000);
+
+                conBPJS.setRequestProperty("X-Integration-Token",
+                    "13178ee2acc7f4de7f2837179f9e807f8c71accc68b505dad4305567da32ae60");
 
                 String bpjsParams="no_rawat="+URLEncoder.encode(noRawat,"UTF-8");
 
@@ -7853,7 +7928,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                 String line;
 
                 while((line=in.readLine())!=null){
-                    responseBPJS.append(line);
+                    responseBPJS.append(line).append(System.lineSeparator());
                 }
 
                 in.close();
@@ -7863,10 +7938,13 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                 // DEBUG TERMINAL
                 // ===============================
                 System.out.println("====================================");
-                System.out.println("DEBUG BPJS RESPONSE (SKIP)");
+                System.out.println(pilihan==1
+                    ? "DEBUG BPJS RESPONSE panggil skip tidak hadir"
+                    : "DEBUG BPJS RESPONSE panggil skip hadir");
                 System.out.println("No Rawat : " + noRawat);
                 System.out.println("URL      : " + urlBPJS.toString());
                 System.out.println("HTTP Code: " + responseCodeBPJS);
+                printBpjsRequestDebug(conBPJS);
                 System.out.println("Response : ");
                 System.out.println(responseBPJS.toString());
                 System.out.println("====================================");
@@ -16290,6 +16368,23 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         }
     }
     
+    private void printBpjsRequestDebug(HttpURLConnection connection) {
+        System.out.println("------------------------------------");
+        System.out.println("DEBUG REQUEST BPJS");
+        System.out.println("BPJS URL    : " + connection.getHeaderField("X-BPJS-Debug-Url"));
+        System.out.println("x-cons-id   : " + connection.getHeaderField("X-BPJS-Debug-Cons-Id"));
+        System.out.println("x-timestamp : " + connection.getHeaderField("X-BPJS-Debug-Timestamp"));
+        System.out.println("x-signature : " + connection.getHeaderField("X-BPJS-Debug-Signature"));
+        System.out.println("user_key    : " + connection.getHeaderField("X-BPJS-Debug-User-Key"));
+        System.out.println("Payload     :");
+        System.out.println("  tanggalperiksa : " + connection.getHeaderField("X-BPJS-Payload-Tanggal"));
+        System.out.println("  kodepoli       : " + connection.getHeaderField("X-BPJS-Payload-Kode-Poli"));
+        System.out.println("  nomorkartu     : " + connection.getHeaderField("X-BPJS-Payload-Nomor-Kartu"));
+        System.out.println("  status          : " + connection.getHeaderField("X-BPJS-Payload-Status"));
+        System.out.println("  waktu           : " + connection.getHeaderField("X-BPJS-Payload-Waktu"));
+        System.out.println("------------------------------------");
+    }
+
     /**
     * @param args the command line arguments
     */

@@ -12,6 +12,8 @@
 
 package simrskhanza;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import surat.SuratKontrol;
 import kepegawaian.DlgCariDokter;
 import kepegawaian.DlgCariPetugas;
@@ -205,6 +207,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import javax.swing.JOptionPane;
+import java.io.InputStream;
+
+
+
 
 /**
  *
@@ -13502,54 +13508,140 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         FormMenu.add(BtnPenilaianDerajatDehidrasi);
     }
     
-    private void kirimTACCNonSpesialis(String noRawat) {
+//    private void kirimTACCNonSpesialis(String noRawat) {
+//    try {
+//        URL urlTACC = new URL("http://" + koneksiDB.HOSTCALL() + "/webkhanza/?page=function_tacc");
+//
+//        HttpURLConnection conn = (HttpURLConnection) urlTACC.openConnection();
+//        conn.setRequestMethod("POST");
+//        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//        conn.setDoOutput(true);
+//
+//        String dataPost = "no_rawat=" + URLEncoder.encode(noRawat, "UTF-8");
+//
+//        DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+//        wr.writeBytes(dataPost);
+//        wr.flush();
+//        wr.close();
+//
+//        int responseCode = conn.getResponseCode();
+//
+//        BufferedReader br = new BufferedReader(
+//            new InputStreamReader(
+//                responseCode >= 200 && responseCode < 300
+//                    ? conn.getInputStream()
+//                    : conn.getErrorStream()
+//            )
+//        );
+//
+//        String line;
+//        StringBuilder response = new StringBuilder();
+//
+//        while ((line = br.readLine()) != null) {
+//            response.append(line);
+//        }
+//
+//        br.close();
+//
+//        System.out.println("===== RESPONSE FUNCTION TACC =====");
+//        System.out.println("URL          : " + urlTACC);
+//        System.out.println("No Rawat     : " + noRawat);
+//        System.out.println("ResponseCode : " + responseCode);
+//        System.out.println("Response     : " + response.toString());
+//        System.out.println("==================================");
+//
+//    } catch (Exception e) {
+//        System.out.println("Gagal kirim ke function_tacc");
+//        e.printStackTrace();
+//    }
+//}
+private void kirimTACCNonSpesialis(String noRawat) {
+    HttpURLConnection conn = null;
     try {
         URL urlTACC = new URL("http://" + koneksiDB.HOSTCALL() + "/webkhanza/?page=function_tacc");
 
-        HttpURLConnection conn = (HttpURLConnection) urlTACC.openConnection();
+        conn = (HttpURLConnection) urlTACC.openConnection();
         conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        conn.setRequestProperty("Accept", "application/json");
         conn.setDoOutput(true);
+        conn.setConnectTimeout(30000);
+        conn.setReadTimeout(30000);
 
-        String dataPost = "no_rawat=" + URLEncoder.encode(noRawat, "UTF-8");
+        String dataPost =
+                "no_rawat=" + URLEncoder.encode(noRawat, "UTF-8") +
+                "&debug_pcare=1";
 
-        DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-        wr.writeBytes(dataPost);
-        wr.flush();
-        wr.close();
+        try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+            wr.write(dataPost.getBytes("UTF-8"));
+            wr.flush();
+        }
 
         int responseCode = conn.getResponseCode();
 
-        BufferedReader br = new BufferedReader(
-            new InputStreamReader(
-                responseCode >= 200 && responseCode < 300
-                    ? conn.getInputStream()
-                    : conn.getErrorStream()
-            )
-        );
+        InputStream inputStream = (responseCode >= 200 && responseCode < 300)
+                ? conn.getInputStream()
+                : conn.getErrorStream();
 
-        String line;
         StringBuilder response = new StringBuilder();
-
-        while ((line = br.readLine()) != null) {
-            response.append(line);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                response.append(line).append("\n");
+            }
         }
 
-        br.close();
-
-        System.out.println("===== RESPONSE FUNCTION TACC =====");
+        System.out.println("===== RESPONSE FUNCTION TACC DEBUG =====");
         System.out.println("URL          : " + urlTACC);
         System.out.println("No Rawat     : " + noRawat);
+        System.out.println("POST Data    : " + dataPost);
         System.out.println("ResponseCode : " + responseCode);
-        System.out.println("Response     : " + response.toString());
-        System.out.println("==================================");
+        System.out.println("Response     : ");
+        System.out.println(response.toString());
+        System.out.println("========================================");
+        tampilkanPeringatanReferensiPCare(response.toString());
 
     } catch (Exception e) {
         System.out.println("Gagal kirim ke function_tacc");
         e.printStackTrace();
+    } finally {
+        if (conn != null) {
+            conn.disconnect();
+        }
     }
 }
 
+private void tampilkanPeringatanReferensiPCare(String responseBody) {
+    try {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(responseBody);
+        JsonNode hasilUpdate = root.path("hasil_update");
+
+        if (!hasilUpdate.isArray()) {
+            return;
+        }
+
+        for (JsonNode item : hasilUpdate) {
+            String message = item.path("message").asText();
+            String metadataMessage = item.path("metadata").path("message").asText();
+            int metadataCode = item.path("metadata").path("code").asInt(0);
+            boolean status = item.path("status").asBoolean(true);
+
+            if (!status && metadataCode == 204 && ("NO_CONTENT".equalsIgnoreCase(message) || "NO_CONTENT".equalsIgnoreCase(metadataMessage))) {
+                JOptionPane.showMessageDialog(
+                        rootPane,
+                        "Diagnosa tidak sesuai referensi PCare.\nSilakan hubungi bagian IT.",
+                        "Peringatan Referensi PCare",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                break;
+            }
+        }
+    } catch (Exception e) {
+        System.out.println("Gagal parsing response function_tacc");
+        e.printStackTrace();
+    }
+}
     private void simpan() {
         switch (TabRawat.getSelectedIndex()) {
             case 0:
